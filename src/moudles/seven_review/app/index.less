@@ -1,0 +1,178 @@
+* {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  // 
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Microsoft Yahei';
+  border: 0;
+  background-color: #333;
+}
+
+// 单元的设置
+@sp_border_color: rgba(0, 0, 0, 0);
+// 字体颜色
+@sp_done_color: #808080;
+@sp_now_color: #fff;
+@sp_will_color: #fff;
+// ====================================table
+// 
+// ====================================title
+// 标题颜色
+@title_bg_done: rgba(0, 0, 0, 0.9);
+@title_bg_now: rgba( 255, 69, 0, 0.65);
+@title_bg_will: rgba( 127, 255, 0, 0.65);
+// 标题的高
+@title_h: 40px;
+// ====================================item
+// 标题的高
+@item_h: 30px;
+// 标题颜色
+@item_bg_done: rgba(0, 0, 0, 0.75);
+@item_bg_now: rgba( 255, 69, 0, 0.65);
+@item_bg_will: rgba( 127, 255, 0, 0.65);
+
+/* ------------------------------ */
+
+.app {
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  box-sizing: border-box;
+  padding: 10px;
+  transition: 1s all ease;
+  >.box {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding-top: 35px;
+    // 工具栏
+    >.tool {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      >span {
+        display: block;
+        float: left;
+        height: 100%;
+        line-height: 30px;
+        text-align: center;
+        padding-left: 8px;
+        padding-right: 5px;
+        background-color: green;
+        color: #fff;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+    // 数据栏
+    >.table {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      // 标题栏
+      >.item {
+        height: @item_h;
+        width: 100%;
+        >.sp_box {
+          float: left;
+          line-height: @item_h;
+          height: 100%;
+          text-align: center;
+          font-weight: 600;
+          box-sizing: border-box;
+          border: 1px solid @sp_border_color;
+          >span {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+          >.done {
+            background-color: @item_bg_done;
+            color: @sp_done_color;
+          }
+          >.now {
+            background-color: @item_bg_now;
+            font-size: 18px;
+            color: @sp_now_color;
+          }
+          >.will {
+            background-color: @item_bg_will;
+            color: @sp_will_color;
+          }
+        }
+      }
+      >.title {
+        height: @title_h;
+        margin-bottom: 2px;
+        >.sp_box {
+          >span {
+            line-height: @title_h;
+            height: @title_h;
+          }
+          >.done {
+            background-color: @title_bg_done;
+            color: @sp_done_color;
+          }
+          >.now {
+            background-color: @title_bg_now;
+            font-size: 18px;
+            color: @sp_now_color;
+          }
+          >.will {
+            background-color: @title_bg_will;
+            color: @sp_will_color;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+/* -------------------------------- */
+
+.bg_1 {
+  background: url('./img/1.gif') center center no-repeat;
+  background-color: rgb(38,38,38);
+  background-size: contain;
+}
+.bg_2 {
+  background: url('./img/2.gif') center center no-repeat;
+  background-color: rgb(33,10,31);
+  background-size: contain;
+}
+.bg_3 {
+  background: url('./img/3.gif') center center no-repeat;
+  background-color: rgb(38,38,38);
+  background-size: contain;
+}
+.bg_4 {
+  background: url('./img/4.gif') center center no-repeat;
+  background-color: rgb(38,38,38);
+  background-size: cover;
+}
+.bg_5 {
+  background: url('./img/5.gif') center center no-repeat;
+  background-color: rgb(38,38,38);
+  background-size: cover;
+}
+.bg_6 {
+  background: url('./img/6.gif') center center no-repeat;
+  background-color: rgb(70,66,110);
+  background-size: contain;
+}
+.bg_7 {
+  background: url('./img/7.gif') center center no-repeat;
+  background-color: rgb(52,73,94);
+  background-size: contain;
+}
