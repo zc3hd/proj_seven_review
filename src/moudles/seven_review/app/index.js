@@ -13,14 +13,12 @@ export default {
         title_sp_w_now: 160,
 
         // ============================
-        // 复习总数
+        // 复习轮数
         review_sum: 6,
 
 
-
-        // 时间chuo数组
+        // 所有复习项目的时间str数组
         all_chuo_arr: [],
-
 
         // ============================
         // 每个项目的字符串数组收集
@@ -32,7 +30,14 @@ export default {
         now_str: '',
         // 复习的天数间隔
         review_jg_arr: [],
-
+      },
+      all: {
+        // 每一行的宽
+        item: {
+          style: null,
+        },
+        // 背景
+        bg_name:'bg_1'
       },
       // api
       api: {},
@@ -56,30 +61,23 @@ export default {
     me._title();
 
 
-    // 初始化每条数据
-    me._list();
-
-
-
     me._bg();
 
   },
   // 
   methods: {
-    _bg:function () {
+    _bg: function() {
       var me = this;
-      var class_str = $('#app').attr('class');
-      class_str =class_str.split(" ");
-      class_str[1] = "bg_"+Math.floor(Math.random()*7);
-      if (class_str[1]=='bg_0') {
-        class_str[1] = "bg_7";
-      }
-      class_str = class_str.join(" ");
-      $('#app').attr('class',class_str);
 
-      setTimeout(function  (argument) {
+      me.all.bg_name = "bg_" + Math.floor(Math.random() * 7);
+      if (me.all.bg_name == 'bg_0') {
+        me.all.bg_name = "bg_7";
+      }
+
+
+      setTimeout(function(argument) {
         me._bg();
-      },10000);
+      }, 10000);
     },
     // ================================================================
     // 初始化一些参数
@@ -117,7 +115,7 @@ export default {
         }
       }
 
-      console.log(me.conf.review_jg_arr);
+      // console.log(me.conf.review_jg_arr);
     },
 
 
@@ -153,7 +151,7 @@ export default {
       // 全局挂载
       me.conf.task_date_obj[name] = new_str_arr;
 
-      return new_str_arr;
+      // return new_str_arr;
     },
 
 
@@ -186,29 +184,21 @@ export default {
     // ================================================================
     _title: function() {
       var me = this;
-      var str = '';
 
-      // 
-      me.conf.all_chuo_arr.forEach(function(ele, index) {
-        str += `<div class="sp_box">
-                  <span class=${me._class_name(ele)}>${ele}</span>
-                </div>`;
-      });
+      var w = 0;
 
-      // 标题的容器
-      $('#title')
-        .css('width', (me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now + 'px')
-        .html(str);
-
-    },
-
-
-    // ================================================================
-    _list: function() {
-      var me = this;
-      for (var item in me.conf.task_date_obj) {
-        me._list_one(item, me.conf.task_date_obj[item]);
+      // 今天有任务
+      if (me.conf.all_chuo_arr.indexOf(me.conf.now_str) != -1) {
+        w = (me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now + 'px';
       }
+      // 
+      else {
+        w = me.conf.all_chuo_arr * me.conf.title_sp_w + 'px';
+      }
+
+      me.all.item.style = {
+        "width": w
+      };
 
 
       $('#table').niceScroll({
@@ -217,52 +207,18 @@ export default {
         cursorborder: '1px solid #ccc'
       });
 
-
-      // 正常
-      $('#table>.item>div').css('width', me.conf.title_sp_w + 'px');
-      // now
-      $('#table>.item>div>.now')
-        .parent()
-        .css('width', me.conf.title_sp_w_now + 'px');
-
     },
-    _list_one: function(name, arr) {
-      var me = this;
 
-      var str = ``;
-      var class_name = '';
 
-      // 全部日期进行循环
-      var key = null;
-      me.conf.all_chuo_arr.forEach(function(ele, index) {
-        key = arr.indexOf(ele);
 
-        // 没
-        if (key == -1) {
-          str += `<div class="sp_box">
-                    <span class=${me._class_name(ele)}></span>
-                  </div>`;
-        }
-        // 有这个元素
-        else {
-          str += `<div class="sp_box">
-                    <span class=${me._class_name(ele)}>${name}</span>
-                  </div>`;
-        }
-      });
 
-      $('#table')
-        .append(`
-          <div class="item" style='width:${(me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now }px'>
-            ${str}
-          </div>`);
-    },
+
 
 
 
 
     // ================================================================
-    _class_name: function(ele) {
+    fn_class_name: function(ele) {
       var me = this;
       var ele_s = FN.f_str_miao(ele);
       var now_s = FN.f_str_miao(me.conf.now_str);
@@ -282,6 +238,26 @@ export default {
       }
       return class_name;
     },
+    // 返回item的宽
+    fn_item_w: function(ele) {
+      return {
+        width: ele != this.conf.now_str ? this.conf.title_sp_w + 'px' : this.conf.title_sp_w_now + 'px',
+      };
+    },
+    // 返回名字
+    fn_item_name: function(ele, arr, name) {
+      var key = arr.indexOf(ele);
+      // 没
+      if (key == -1) {
+        name = '';
+      }
+      // 有这个元素
+      else {
+        name = name;
+      }
+      return name;
+    },
+
 
 
 

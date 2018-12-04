@@ -45,7 +45,7 @@ else if (process.env.NODE_ENV == 'git') {
   // 要提交的目录
   var _url = path.join(__dirname, './');
   // 要提交的源的名字
-  var origin = 'name';
+  var origin = 'origin';
 
   tool
     ._cmd(`git add ${_url}`)
