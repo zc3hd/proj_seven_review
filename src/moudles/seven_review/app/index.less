@@ -47,6 +47,12 @@ body {
 @lun_bg_will: green;
 @lun_color_will: #fff;
 
+
+
+.el-message p{
+  font-weight: 800;
+  color: #000;
+}
 /* ------------------------------ */
 
 .app {
@@ -221,7 +227,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 99999;
+    z-index: 1000;
     >.box {
       width: 300px;
       height: 196px;
@@ -293,8 +299,25 @@ body {
               border-radius: 4px;
               color: #000;
               outline: none;
-              font-size: 16px;
+              font-size: 14px;
               font-weight: 800;
+            }
+            >div {
+              width: 100%;
+              height: 100%;
+              >input {
+                width: 100%;
+                height: 100%;
+                border: none;
+                box-sizing: border-box;
+                padding-left: 5px;
+                border: 1px solid rgba(0, 0, 0, .15);
+                border-radius: 4px;
+                color: #000;
+                outline: none;
+                font-size: 14px;
+                font-weight: 800;
+              }
             }
           }
         }

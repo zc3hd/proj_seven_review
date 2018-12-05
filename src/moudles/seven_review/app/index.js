@@ -1,5 +1,10 @@
 import plans_data from './test_data.js';
 
+import { DatePicker } from 'element-ui';
+Vue.use(DatePicker);
+import { Message } from 'element-ui';
+
+
 export default {
   // name: 'main_app',
   data: function() {
@@ -24,7 +29,7 @@ export default {
         // 所有的数据
         plans_data: plans_data,
       },
-      // 
+      // 列表中的所有项目
       all: {
         // 每一行的宽
         item: {
@@ -36,13 +41,17 @@ export default {
         // 模糊
         blur: ''
       },
-      // 
+      // 弹窗中数据
       layer: {
+        // 
         show: false,
         box_class: 'box_none',
-
         // 删除标志
         del_show: false,
+        // 
+        name: '',
+        sum: 5,
+        date: '',
       },
       // api
       api: {},
@@ -52,33 +61,11 @@ export default {
   mounted: function() {
     var me = this;
 
-    // 初始化数据
-    me._init_data();
-
-    // 每项数据集中生成
-    me._item_all_obj();
-
-    // 大数组生成
-    me._all_obj();
+    me.cc_init();
 
 
-    // 表的一些属性
-    me._list();
-
-
-
-
-    // setTimeout(function  () {
-
-    // },500);
-
-
-    // setTimeout(function  () {
-    //   me.layer.box_class = 'zoomOutRight';
-    // },5000);
-
-
-    // me._bg();
+    // 
+    me._bg();
 
   },
   // 
@@ -104,10 +91,12 @@ export default {
         me.layer.show = false;
         // blur
         me.all.blur = '';
+
+        me.cc_init();
       }, 1100);
     },
 
-
+    // =====================================
     // 
     ev_add: function() {
       var me = this;
@@ -116,7 +105,6 @@ export default {
       // 删除按钮
       me.layer.del_show = false;
     },
-
     // 
     ev_upd: function() {
       var me = this;
@@ -127,17 +115,56 @@ export default {
     },
 
 
-
+    // =====================================
     // 
     ev_save: function() {
+      var me = this;
+
+
+      if (me.layer.name == '') {
+        Message.error('name不能为空');
+        return;
+      }
+      if (me.layer.sum <= 1) {
+        Message.error('复习轮次不能小于2次');
+        return;
+      }
+      if (me.layer.date == "") {
+        Message.error('请选择计划开始时间');
+        return;
+      }
+      if (FN.f_str_miao(FN.f_miao_str(Date.parse(me.layer.date), true)) > FN.f_str_miao(me.conf.now_str)) {
+        Message.error('不能选择未来的时间');
+        me.layer.date = '';
+        return;
+      }
+
+
+      // plans_data.push({
+      //   name: me.layer.name,
+      //   sum: me.layer.sum,
+      //   date: FN.f_miao_str(Date.parse(me.layer.date), true),
+      //   info: ``,
+      // });
+
+
+      me.layer.name = '';
+      me.layer.sum = 5;
+      me.layer.date = '';
+
+
+
+      me._layer_hide();
+
+
+
+    },
+
+    ev_del: function() {
       var me = this;
       me._layer_hide();
     },
     ev_close: function() {
-      var me = this;
-      me._layer_hide();
-    },
-    ev_del: function() {
       var me = this;
       me._layer_hide();
     },
@@ -162,7 +189,22 @@ export default {
       }, 10000);
     },
 
+    cc_init: function(argument) {
+      var me = this;
 
+      // 初始化数据
+      me._init_data();
+
+      // 每项数据集中生成
+      me._item_all_obj();
+
+      // 大数组生成
+      me._all_obj();
+
+
+      // 表的一些属性
+      me._list();
+    },
     // ================================================================
     // 初始化一些参数
     _init_data: function() {
@@ -172,6 +214,8 @@ export default {
 
       // 初始化每组数据的间隔
       me._init_all_jianGe();
+
+      console.log(me.conf.plans_data);
     },
     // 得到现象的时间 str
     _init_data_now: function(argument) {
@@ -185,7 +229,7 @@ export default {
     _init_all_jianGe: function() {
       var me = this;
       // console.log(plans_data);
-      plans_data.forEach(function(ele, index) {
+      me.conf.plans_data.forEach(function(ele, index) {
         me._init_one_jianGe(ele);
       });
     },
@@ -217,7 +261,7 @@ export default {
     _item_all_obj: function(argument) {
       var me = this;
       // 
-      plans_data.forEach(function(ele, index) {
+      me.conf.plans_data.forEach(function(ele, index) {
         // me._item_one_data(ele.name, FN.f_str_miao(ele.date));
         me._item_one_data(ele);
       });
@@ -252,7 +296,7 @@ export default {
     // 大数组生成
     _all_obj: function() {
       var me = this;
-      plans_data.forEach(function(ele, index) {
+      me.conf.plans_data.forEach(function(ele, index) {
         me._all_from_one(ele.jg_date);
       });
       // 排序

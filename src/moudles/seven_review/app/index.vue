@@ -50,19 +50,20 @@
           <div class="item">
             <div class="info">name</div>
             <div class="ipt">
-              <input type="text">
+              <input type="text" v-model="layer.name" placeholder="input name">
             </div>
           </div>
           <div class="item">
             <div class="info">review</div>
             <div class="ipt">
-              <input type="text">
+              <input type="text" v-model="layer.sum">
             </div>
           </div>
           <div class="item">
             <div class="info">start</div>
             <div class="ipt">
-              <input type="text">
+              <el-date-picker v-model="layer.date" type="date" placeholder="sel date" end-placeholder="conf.now_str"></el-date-picker>
+
             </div>
           </div>
         </div>
