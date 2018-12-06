@@ -3,22 +3,25 @@
     <!-- 列表 -->
     <div class="box" :class='all.blur'>
       <!-- 工具栏 -->
-      <div class="tool">
-        <div class="add" @click='ev_add()'>add</div>
+      <div class="tool" :class='conf.tool_class'>
+        <div class="add" @click='ev_add()'>{{conf.add_name}}</div>
       </div>
-      <!-- 大盒子 -->
-      <div class="box">
+      <!-- -->
+      <div class="box" v-show="conf.box_show">
+
+
         <!-- 列表的导航 -->
         <div class="nav" id="nav">
           <div class="item title">
             <div class="box">date</div>
           </div>
 
-          <div class="item item_name" v-for='(obj,index) in conf.plans_data' @click='ev_upd()'>
+          <div class="item item_name" v-for='(obj,index) in conf.plans_data' @click='ev_upd(obj)'>
             <div class="box">{{obj.name}}</div>
           </div>
-
         </div>
+
+
         <!-- 列表 -->
         <div class="list_box" id="table">
           <!-- 标题 -->
@@ -37,6 +40,7 @@
           </div>
         </div>
       </div>
+
     </div>
 
 

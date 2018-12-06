@@ -5,26 +5,25 @@
 export default  [
 // 
   {
+    id:1,
     name: "vue",
     date: '2018-11-28',
     sum:6,
-    info: `
-    `,
   },
   
   // 
   {
+    id:2,
     name: "node",
     date: '2018-11-27',
     sum:5,
-    info: ``,
   },
   // 
   {
+    id:3,
     name: "webpack",
     date: '2018-12-05',
     sum:6,
-    info: ``,
   },
 
 

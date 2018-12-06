@@ -1,16 +1,14 @@
 import plans_data from './test_data.js';
 
+
 import { DatePicker } from 'element-ui';
 Vue.use(DatePicker);
 import { Message } from 'element-ui';
-
-
-
-
 export default {
   // name: 'main_app',
   data: function() {
     return {
+      // =================================
       // 所有的配置项
       conf: {
         // ============================
@@ -19,17 +17,19 @@ export default {
         // 当前的任务
         title_sp_w_now: 160,
 
-
-        // ============================
-        // 所有复习项目的时间str数组
-        all_chuo_arr: [],
-
-        // ============================
         // 今天的日期str
         now_str: '',
-
+        // 所有复习项目的时间str数组
+        all_chuo_arr: [],
         // 所有的数据
-        plans_data: plans_data,
+        plans_data: [],
+
+        // =============================
+        // 新增按钮的名字
+        add_name: "",
+        box_show: false,
+
+        tool_class:"tool_login",
       },
       // 列表中的所有项目
       all: {
@@ -41,7 +41,10 @@ export default {
         bg_name: '',
 
         // 模糊
-        blur: ''
+        blur: '',
+
+        // 操作类型
+        type: "",
       },
       // 弹窗中数据
       layer: {
@@ -54,6 +57,11 @@ export default {
         name: '',
         sum: 5,
         date: '',
+        id: -1,
+      },
+      // =================================
+      login: {
+
       },
       // api
       api: {},
@@ -68,7 +76,6 @@ export default {
 
     // 
     me._bg();
-
   },
   // 
   methods: {
@@ -82,7 +89,7 @@ export default {
       // 动画显示
       me.layer.box_class = 'zoomInLeft';
     },
-    // 隐藏
+    // 关闭
     _layer_hide: function() {
       var me = this;
       // 动画离开
@@ -95,25 +102,35 @@ export default {
         me.all.blur = '';
 
         me.cc_init();
-      }, 1100);
+      }, 1000);
     },
 
     // =====================================
-    // 
+    // 新增
     ev_add: function() {
       var me = this;
       me._layer_show();
 
       // 删除按钮
       me.layer.del_show = false;
+
+      // 操作
+      me.all.type = 'add';
     },
-    // 
-    ev_upd: function() {
+    // 修改删除
+    ev_upd: function(obj) {
       var me = this;
       me._layer_show();
-
-      // 删除按钮
+      // 删除按钮显示
       me.layer.del_show = true;
+
+
+      me.layer.name = obj.name;
+      me.layer.sum = obj.sum;
+      me.layer.date = obj.date;
+      me.layer.id = obj.id;
+
+      me.all.type = 'upd';
     },
 
 
@@ -141,29 +158,61 @@ export default {
         return;
       }
 
+      switch (me.all.type) {
+        case "add":
+          var obj = {
+            id: Math.random(),
+            name: me.layer.name,
+            sum: me.layer.sum,
+            date: FN.f_miao_str(Date.parse(me.layer.date), true),
+          };
+          // 原始数组改变
+          plans_data.push(obj);
+          break;
+          // 
+        case "upd":
+          plans_data.forEach(function(ele, index) {
+            if (ele.id == me.layer.id) {
+              ele.name = me.layer.name;
+              ele.sum = me.layer.sum;
+              ele.date = me.layer.date;
+            }
+          });
+          break;
+      }
 
-      // plans_data.push({
-      //   name: me.layer.name,
-      //   sum: me.layer.sum,
-      //   date: FN.f_miao_str(Date.parse(me.layer.date), true),
-      //   info: ``,
-      // });
+
+      me.cc_init();
+
+      me.layer.name = '';
+      me.layer.sum = 5;
+      me.layer.date = '';
+      me.layer.id = -1;
+
+
+      console.log(plans_data);
+
+
+      me._layer_hide();
+    },
+    ev_del: function() {
+      var me = this;
+
+      var _index = 0;
+      plans_data.forEach(function(ele, index) {
+        if (ele.id == me.layer.id) {
+          _index = index;
+        }
+      });
+      plans_data.splice(_index, 1);
 
 
       me.layer.name = '';
       me.layer.sum = 5;
       me.layer.date = '';
+      me.layer.id = -1;
 
 
-
-      me._layer_hide();
-
-
-
-    },
-
-    ev_del: function() {
-      var me = this;
       me._layer_hide();
     },
     ev_close: function() {
@@ -191,36 +240,29 @@ export default {
       }, 10000);
     },
 
-    cc_init: function(argument) {
+    cc_init: function() {
       var me = this;
 
-      // 初始化数据
-      me._init_data();
+      me.conf.plans_data.length = 0;
 
+      // 得到now的时间 str
+      me._init_data_now();
+      // 初始化每组数据的间隔
+      me._init_all_jianGe();
       // 每项数据集中生成
       me._item_all_obj();
 
       // 大数组生成
       me._all_obj();
 
+      // me.conf.plans_data = me.conf.plans_data;
 
       // 表的一些属性
       me._list();
     },
     // ================================================================
-    // 初始化一些参数
-    _init_data: function() {
-      var me = this;
-      // 得到now的时间 str
-      me._init_data_now();
-
-      // 初始化每组数据的间隔
-      me._init_all_jianGe();
-
-      console.log(me.conf.plans_data);
-    },
     // 得到现象的时间 str
-    _init_data_now: function(argument) {
+    _init_data_now: function() {
       var me = this;
       // 当前时间的秒数
       var miao = Date.parse(new Date());
@@ -230,17 +272,27 @@ export default {
     // 初始化每组数据的间隔
     _init_all_jianGe: function() {
       var me = this;
-      // console.log(plans_data);
-      me.conf.plans_data.forEach(function(ele, index) {
-        me._init_one_jianGe(ele);
+
+      var new_ele = null;
+      plans_data.forEach(function(ele, index) {
+        new_ele = me._init_one_jianGe(ele);
+        me.conf.plans_data.push(new_ele);
       });
+      // console.log(me.conf.plans_data);
+
     },
-    // 
+    // 一条数据的间隔
     _init_one_jianGe: function(ele) {
       var me = this;
+      var new_ele = {};
+      new_ele.id = ele.id;
+      new_ele.name = ele.name;
+      new_ele.date = ele.date;
+      new_ele.sum = ele.sum;
+
       var day = 1;
       var review_jg_arr = [];
-      for (var i = 0; i < ele.sum; i++) {
+      for (var i = 0; i < new_ele.sum; i++) {
         review_jg_arr.push(day);
         // 下一次的数据
         day = day * 2;
@@ -253,19 +305,21 @@ export default {
             break;
         }
       }
-      ele.jg_days = review_jg_arr;
+      new_ele.jg_days = review_jg_arr;
+      return new_ele;
     },
 
 
 
     // ================================================================
     // 每项数据生成
-    _item_all_obj: function(argument) {
+    _item_all_obj: function() {
       var me = this;
       // 
       me.conf.plans_data.forEach(function(ele, index) {
         // me._item_one_data(ele.name, FN.f_str_miao(ele.date));
         me._item_one_data(ele);
+
       });
     },
     // 每项复习日期的生成
@@ -290,6 +344,8 @@ export default {
       });
       // 本对象挂载
       obj.jg_date = new_str_arr;
+
+      return obj;
     },
 
 
