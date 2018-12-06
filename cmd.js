@@ -46,6 +46,8 @@ else if (process.env.NODE_ENV == 'git') {
   var _url = path.join(__dirname, './');
 
   var os = require('os');
+
+
   // 要提交的源的名字
   var origin = (os.hostname()=="LAPTOP-UJ33NHEM"?"origin":"name");
 
