@@ -2,7 +2,7 @@
 
 ### 1.说明
 
-* 根据遗忘曲线制作的记忆节点计划。
+* 根据遗忘曲线制作的记忆节点日期计划表。
 * 使用自己的template，前端业务全部用vue。
 
 ### 2.过程
@@ -25,7 +25,14 @@
 * 2.用的是webpack-004的架子，和本项目又不同。
 * 3.webpack-004的结构是vue_demo整个是个功能模块，下面有很多子模块，都属于vue_demo。所以内部有个最终输出是app模块，且文件夹下面有测试自己的模块入口index.html和JS，为了自己测试用。在vue_demo外应该还有个真正的html和JS。
 * 4.现在我们的结构是login功能，main模块，没有从属关系。又因为是我自己在开发，所以直接在外面有HTML和JS，模块之间都是相互分开，有数据传递用vuex。这样才是最合理的构架方式。
-* 5.在main中引用import { Message } from 'element-ui';在login需要得重新调用。在new Vue()那个地方引也不是全局引入。最好的方法就是在那里进行prototype挂载属性。
+* 5.在main中引用import { Message } from 'element-ui';在login需要得重新调用。最好的方法就是在那里进行prototype挂载属性。
+```
+【在全局进行引入】
+import { DatePicker,Message } from 'element-ui';
+Vue.use(DatePicker);
+Vue.prototype.$ele_msg = Message;
+```
+
 * 6.scoped属性只是保证其他组件的class不影响自己，但是根组件的样式还是会影响的。
 * 7.vuex公共属性的命名方式：$xxxx。感觉更好的应该是_$x_name
 

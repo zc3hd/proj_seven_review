@@ -1,9 +1,6 @@
 import plans_data from './test_data.js';
+plans_data.length = 0;
 
-// =============================================UI组件
-import { DatePicker } from 'element-ui';
-Vue.use(DatePicker);
-import { Message } from 'element-ui';
 // =============================================自己组件
 // login
 const cpt_login = resolve => require([
@@ -75,24 +72,24 @@ export default {
   // x的公共数据
   computed: {
     // 新增按钮的名字
-    $add_btn_name: function() {
-      return this.$store.state.$add_btn_name;
+    $x_add_btn_name: function() {
+      return this.$store.state.add_btn_name;
     },
     // 列表显示
-    $box_show: function() {
-      return this.$store.state.$box_show;
+    $x_box_show: function() {
+      return this.$store.state.box_show;
     },
     // 按钮的样式
-    $add_btn_class: function() {
-      return this.$store.state.$add_btn_class;
+    $x_add_btn_class: function() {
+      return this.$store.state.add_btn_class;
     },
     // add函数事件 是否响应
-    $add_ev: function() {
-      return this.$store.state.$add_ev;
+    $x_add_ev: function() {
+      return this.$store.state.add_ev;
     },
     // 登录框是否显示
-    $login_box_show:function  (argument) {
-      return this.$store.state.$login_box_show;
+    $x_login_box_show:function  (argument) {
+      return this.$store.state.login_box_show;
     },
   },
   // 初始函数
@@ -138,7 +135,7 @@ export default {
       var me = this;
 
       // 没有开启之前是不能用该函数的
-      if (!me.$add_ev) {
+      if (!me.$x_add_ev) {
         return;
       }
 
@@ -166,7 +163,6 @@ export default {
       me.all.type = 'upd';
     },
 
-
     // =====================================
     // 
     ev_save: function() {
@@ -174,19 +170,19 @@ export default {
 
 
       if (me.layer.name == '') {
-        Message.error('name不能为空');
+        me.$ele_msg.error('name不能为空');
         return;
       }
       if (me.layer.sum <= 1) {
-        Message.error('复习轮次不能小于2次');
+        me.$ele_msg.error('复习轮次不能小于2次');
         return;
       }
       if (me.layer.date == "") {
-        Message.error('请选择计划开始时间');
+        me.$ele_msg.error('请选择计划开始时间');
         return;
       }
       if (FN.f_str_miao(FN.f_miao_str(Date.parse(me.layer.date), true)) > FN.f_str_miao(me.conf.now_str)) {
-        Message.error('不能选择未来的时间');
+        me.$ele_msg.error('不能选择未来的时间');
         me.layer.date = '';
         return;
       }
@@ -222,10 +218,7 @@ export default {
       me.layer.date = '';
       me.layer.id = -1;
 
-
-      console.log(plans_data);
-
-
+      // console.log(plans_data);
       me._layer_hide();
     },
     ev_del: function() {
@@ -272,10 +265,15 @@ export default {
         me._bg();
       }, 10000);
     },
-
+    // 
     cc_init: function() {
       var me = this;
 
+      if (plans_data.length==0) {
+        
+      }
+
+      // 清除本地数据数组
       me.conf.plans_data.length = 0;
 
       // 得到now的时间 str

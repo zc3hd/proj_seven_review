@@ -5,16 +5,16 @@
 
       <!-- 工具栏 -->
       <div class="tool">
-        <div class="add" :class='$add_btn_class' @click='ev_add()'>
+        <div class="add" :class='$x_add_btn_class' @click='ev_add()'>
           <!-- 登录后的按钮 -->
-          {{$add_btn_name}}
+          {{$x_add_btn_name}}
           <!-- 登录 -->
-          <cpt_login v-show='$login_box_show'></cpt_login>
+          <cpt_login v-show='$x_login_box_show'></cpt_login>
         </div>
       </div>
 
       <!-- 列表盒子 -->
-      <div class="box" v-show="$box_show">
+      <div class="box" v-show="$x_box_show">
 
         <!-- 列表的导航 -->
         <div class="nav" id="nav">
