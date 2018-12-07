@@ -75,28 +75,50 @@ body {
       left: 0;
       width: 100%;
       height: 30px;
-      transition: 0.2s all ease;
+      
       >.add {
-        display: block;
-        float: left;
+        position: absolute;
+        top: 0;
+        left: 0;
+        
+        width: 100px;
         height: 100%;
         line-height: 30px;
-        width: 100px;
-        text-align: center;
+
         background-color: green;
+        text-align: center;
         color: #fff;
+        font-weight: 800;
+
         border-radius: 5px;
         cursor: pointer;
-      }
-      // 登录状态add盒子
-      >.add_tool {
+
         
+        transform: translate(0%, 0%);
+        box-shadow: 0px 0px 0px #fff;
+
+        transition: 1s all ease;
+      }
+      // ======登录状态add_btn样式
+      >.add_login {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 350px;
+        height: 200px;
+        line-height: 200px;
+
+        background-color: rgba( 0, 128, 0, 0.8);
+        
+        border-radius: 10px;
+        cursor: default;
+
+        transform: translate(-50%, 100%);
+        box-shadow: 0px 0px 50px #fff;
       }
     }
-    // 登录状态tool盒子
-    >.tool_login {
-      height: 100%;
-    }
+    // 列表盒子
     >.box {
       width: 100%;
       height: 100%;

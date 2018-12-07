@@ -1,11 +1,22 @@
 import plans_data from './test_data.js';
 
-
+// =============================================UI组件
 import { DatePicker } from 'element-ui';
 Vue.use(DatePicker);
 import { Message } from 'element-ui';
+// =============================================自己组件
+// login
+const cpt_login = resolve => require([
+  '../login/index.vue'
+], resolve);
+
+
+
+
 export default {
-  // name: 'main_app',
+  components: {
+    cpt_login: cpt_login,
+  },
   data: function() {
     return {
       // =================================
@@ -24,12 +35,6 @@ export default {
         // 所有的数据
         plans_data: [],
 
-        // =============================
-        // 新增按钮的名字
-        add_name: "",
-        box_show: false,
-
-        tool_class:"tool_login",
       },
       // 列表中的所有项目
       all: {
@@ -67,12 +72,34 @@ export default {
       api: {},
     }
   },
+  // x的公共数据
+  computed: {
+    // 新增按钮的名字
+    $add_btn_name: function() {
+      return this.$store.state.$add_btn_name;
+    },
+    // 列表显示
+    $box_show: function() {
+      return this.$store.state.$box_show;
+    },
+    // 按钮的样式
+    $add_btn_class: function() {
+      return this.$store.state.$add_btn_class;
+    },
+    // add函数事件 是否响应
+    $add_ev: function() {
+      return this.$store.state.$add_ev;
+    },
+    // 登录框是否显示
+    $login_box_show:function  (argument) {
+      return this.$store.state.$login_box_show;
+    },
+  },
   // 初始函数
   mounted: function() {
     var me = this;
 
     me.cc_init();
-
 
     // 
     me._bg();
@@ -109,6 +136,12 @@ export default {
     // 新增
     ev_add: function() {
       var me = this;
+
+      // 没有开启之前是不能用该函数的
+      if (!me.$add_ev) {
+        return;
+      }
+
       me._layer_show();
 
       // 删除按钮

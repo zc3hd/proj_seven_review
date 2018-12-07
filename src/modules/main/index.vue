@@ -2,13 +2,19 @@
   <div class="app" :class='all.bg_name' id="app">
     <!-- 列表 -->
     <div class="box" :class='all.blur'>
-      <!-- 工具栏 -->
-      <div class="tool" :class='conf.tool_class'>
-        <div class="add" @click='ev_add()'>{{conf.add_name}}</div>
-      </div>
-      <!-- -->
-      <div class="box" v-show="conf.box_show">
 
+      <!-- 工具栏 -->
+      <div class="tool">
+        <div class="add" :class='$add_btn_class' @click='ev_add()'>
+          <!-- 登录后的按钮 -->
+          {{$add_btn_name}}
+          <!-- 登录 -->
+          <cpt_login v-show='$login_box_show'></cpt_login>
+        </div>
+      </div>
+
+      <!-- 列表盒子 -->
+      <div class="box" v-show="$box_show">
 
         <!-- 列表的导航 -->
         <div class="nav" id="nav">
@@ -30,6 +36,8 @@
               <span :class=fn_item_bg(ele)>{{ele}}</span>
             </div>
           </div>
+          
+          <!-- 真实的数据 -->
           <div class="item" v-for='(obj,index) in conf.plans_data' :style="all.item.style">
             <div class="sp_box" v-for='ele in conf.all_chuo_arr' :style="fn_item_w(ele)">
               <span :class=fn_item_bg(ele)>
@@ -38,6 +46,7 @@
             </span>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -84,8 +93,8 @@
   </div>
 </template>
 <script>
-import app from './index.js';
-export default app;
+import obj from './index.js';
+export default obj;
 </script>
 <style lang="less">
 @import './index.less';

@@ -1,5 +1,5 @@
 // 要测试那个模块
-var one = './src/moudles/seven_review/';
+var one = './src/modules/';
 
 
 

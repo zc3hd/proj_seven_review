@@ -15,18 +15,17 @@
 
 
 // ================================================vuex
-// import store from './store/index.js';
+import store from './store.js';
 
 // 根组件
-import App from './app/index.vue';
+import App from './main/index.vue';
 new Vue({
 
   el: '#app',
   // 这样的模式可以先测试为单个模块
   render: h => h(App),
   // router: router,
-
   // =====================vuex
-  // store:store,
+  store:store,
 });
 
