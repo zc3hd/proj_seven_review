@@ -1,5 +1,5 @@
 // 要测试那个模块
-var one = './src/modules/';
+var one = './src/modules/page_admin/';
 
 
 

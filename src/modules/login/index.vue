@@ -11,17 +11,17 @@
       <div class="item">
         <div class="info">password</div>
         <div class="ipt">
-          <input type="text" v-model="obj.ps" placeholder="***">
+          <input type="password" v-model="obj.ps" placeholder="***">
         </div>
       </div>
     </div>
     <!-- 工具栏 -->
     <div class="tool">
       <div class="item">
-        <div class="btn">register</div>
+        <div class="btn" @click.stop='sign(0)'>register</div>
       </div>
       <div class="item">
-        <div class="btn" @click.stop='sign'>sign</div>
+        <div class="btn" @click.stop='sign(1)'>sign</div>
       </div>
     </div>
   </div>

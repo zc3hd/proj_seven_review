@@ -36,5 +36,5 @@ else {
 
   API(app);
   app.listen(conf.api_port);
-  console.log('build 测试服务 ' + conf.api_port);
+  console.log('build app服务 ' + conf.api_port);
 }

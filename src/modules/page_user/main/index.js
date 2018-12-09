@@ -1,10 +1,10 @@
 import plans_data from './test_data.js';
-plans_data.length = 0;
+// plans_data.arr.length = 0;
 
 // =============================================自己组件
 // login
 const cpt_login = resolve => require([
-  '../login/index.vue'
+  '../../login/index.vue'
 ], resolve);
 
 
@@ -19,51 +19,55 @@ export default {
       // =================================
       // 所有的配置项
       conf: {
-        // ============================
+        // ============================单元格
         // 标题的span的宽
         title_sp_w: 120,
         // 当前的任务
         title_sp_w_now: 160,
 
+        // ============================列表的属性
         // 今天的日期str
         now_str: '',
-        // 所有复习项目的时间str数组
+        // 所有复习项目的时间str的大数组
         all_chuo_arr: [],
-        // 所有的数据
-        plans_data: [],
-
+        // 所有的计划数据
+        plans_arr: [],
       },
-      // 列表中的所有项目
-      all: {
-        // 每一行的宽
+
+      // str区
+      str: {
+        // ==================================name
+        // 整个背景的类名
+        class_bg: '',
+
+        // 列表模糊的类名
+        class_blur: '',
+
+        // ==================================事件类型
+        // 操作类型(区分是从add进入，还是upd进入，后面的逻辑不一样)
+        ev_type: "",
+
+        // ==================================单元格
+        // 每个单元的样式
         item: {
-          style: null,
+          style: {},
         },
-        // 背景
-        bg_name: '',
-
-        // 模糊
-        blur: '',
-
-        // 操作类型
-        type: "",
       },
+
       // 弹窗中数据
       layer: {
-        // 
+        // 是否显示
         show: false,
-        box_class: 'box_none',
-        // 删除标志
+        // 删除标志是否显示
         del_show: false,
+
+        // 动画样式
+        class_animate: 'box_none',
         // 
         name: '',
         sum: 5,
         date: '',
         id: -1,
-      },
-      // =================================
-      login: {
-
       },
       // api
       api: {},
@@ -88,15 +92,21 @@ export default {
       return this.$store.state.add_ev;
     },
     // 登录框是否显示
-    $x_login_box_show:function  (argument) {
+    $x_login_box_show: function(argument) {
       return this.$store.state.login_box_show;
+    },
+  },
+  watch: {
+    // 登录成功后显示，页面初始化化
+    $x_box_show: function(val, old_val) {
+      if (val) {
+        this.__init();
+      }
     },
   },
   // 初始函数
   mounted: function() {
     var me = this;
-
-    me.cc_init();
 
     // 
     me._bg();
@@ -109,27 +119,27 @@ export default {
       // 显示
       me.layer.show = true;
       // blur
-      me.all.blur = 'box_blur';
+      me.str.class_blur = 'box_blur';
       // 动画显示
-      me.layer.box_class = 'zoomInLeft';
+      me.layer.class_animate = 'zoomInLeft';
     },
     // 关闭
     _layer_hide: function() {
       var me = this;
       // 动画离开
-      me.layer.box_class = 'zoomOutRight';
+      me.layer.class_animate = 'zoomOutRight';
 
       setTimeout(function() {
         // 
         me.layer.show = false;
         // blur
-        me.all.blur = '';
+        me.str.class_blur = '';
 
-        me.cc_init();
+        me.__init();
       }, 1000);
     },
 
-    // =====================================
+    // =====================================列表的ev
     // 新增
     ev_add: function() {
       var me = this;
@@ -145,7 +155,7 @@ export default {
       me.layer.del_show = false;
 
       // 操作
-      me.all.type = 'add';
+      me.str.ev_type = 'add';
     },
     // 修改删除
     ev_upd: function(obj) {
@@ -160,10 +170,10 @@ export default {
       me.layer.date = obj.date;
       me.layer.id = obj.id;
 
-      me.all.type = 'upd';
+      me.str.ev_type = 'upd';
     },
 
-    // =====================================
+    // =====================================弹窗的ev
     // 
     ev_save: function() {
       var me = this;
@@ -177,6 +187,10 @@ export default {
         me.$ele_msg.error('复习轮次不能小于2次');
         return;
       }
+      if (me.layer.sum > 15) {
+        me.$ele_msg.error('复习轮次不能大于15次');
+        return;
+      }
       if (me.layer.date == "") {
         me.$ele_msg.error('请选择计划开始时间');
         return;
@@ -187,7 +201,7 @@ export default {
         return;
       }
 
-      switch (me.all.type) {
+      switch (me.str.ev_type) {
         case "add":
           var obj = {
             id: Math.random(),
@@ -196,11 +210,11 @@ export default {
             date: FN.f_miao_str(Date.parse(me.layer.date), true),
           };
           // 原始数组改变
-          plans_data.push(obj);
+          plans_data.arr.push(obj);
           break;
           // 
         case "upd":
-          plans_data.forEach(function(ele, index) {
+          plans_data.arr.forEach(function(ele, index) {
             if (ele.id == me.layer.id) {
               ele.name = me.layer.name;
               ele.sum = me.layer.sum;
@@ -211,26 +225,26 @@ export default {
       }
 
 
-      me.cc_init();
+      me.__init();
 
       me.layer.name = '';
       me.layer.sum = 5;
       me.layer.date = '';
       me.layer.id = -1;
 
-      // console.log(plans_data);
+      // console.log(plans_data.arr);
       me._layer_hide();
     },
     ev_del: function() {
       var me = this;
 
       var _index = 0;
-      plans_data.forEach(function(ele, index) {
+      plans_data.arr.forEach(function(ele, index) {
         if (ele.id == me.layer.id) {
           _index = index;
         }
       });
-      plans_data.splice(_index, 1);
+      plans_data.arr.splice(_index, 1);
 
 
       me.layer.name = '';
@@ -247,17 +261,13 @@ export default {
     },
 
 
-
-
-
-
-    // ==============================================================
+    // =======================================
     _bg: function() {
       var me = this;
 
-      me.all.bg_name = "bg_" + Math.floor(Math.random() * 7);
-      if (me.all.bg_name == 'bg_0') {
-        me.all.bg_name = "bg_7";
+      me.str.class_bg = "bg_" + Math.floor(Math.random() * 7);
+      if (me.str.class_bg == 'bg_0') {
+        me.str.class_bg = "bg_7";
       }
 
 
@@ -265,16 +275,14 @@ export default {
         me._bg();
       }, 10000);
     },
+
+
     // 
-    cc_init: function() {
+    __init: function() {
       var me = this;
 
-      if (plans_data.length==0) {
-        
-      }
-
       // 清除本地数据数组
-      me.conf.plans_data.length = 0;
+      me.conf.plans_arr.length = 0;
 
       // 得到now的时间 str
       me._init_data_now();
@@ -286,12 +294,10 @@ export default {
       // 大数组生成
       me._all_obj();
 
-      // me.conf.plans_data = me.conf.plans_data;
-
       // 表的一些属性
       me._list();
     },
-    // ================================================================
+    // =======================================
     // 得到现象的时间 str
     _init_data_now: function() {
       var me = this;
@@ -305,11 +311,10 @@ export default {
       var me = this;
 
       var new_ele = null;
-      plans_data.forEach(function(ele, index) {
+      plans_data.arr.forEach(function(ele, index) {
         new_ele = me._init_one_jianGe(ele);
-        me.conf.plans_data.push(new_ele);
+        me.conf.plans_arr.push(new_ele);
       });
-      // console.log(me.conf.plans_data);
 
     },
     // 一条数据的间隔
@@ -340,14 +345,12 @@ export default {
       return new_ele;
     },
 
-
-
-    // ================================================================
+    // =======================================
     // 每项数据生成
     _item_all_obj: function() {
       var me = this;
       // 
-      me.conf.plans_data.forEach(function(ele, index) {
+      me.conf.plans_arr.forEach(function(ele, index) {
         // me._item_one_data(ele.name, FN.f_str_miao(ele.date));
         me._item_one_data(ele);
 
@@ -380,12 +383,11 @@ export default {
     },
 
 
-
-    // ================================================================
+    // =======================================
     // 大数组生成
     _all_obj: function() {
       var me = this;
-      me.conf.plans_data.forEach(function(ele, index) {
+      me.conf.plans_arr.forEach(function(ele, index) {
         me._all_from_one(ele.jg_date);
       });
       // 排序
@@ -406,7 +408,7 @@ export default {
     },
 
 
-    // ================================================================
+    // =======================================
     _list: function() {
       var me = this;
 
@@ -421,7 +423,8 @@ export default {
         w = me.conf.all_chuo_arr.length * me.conf.title_sp_w + 'px';
       }
 
-      me.all.item.style = {
+      // 每个单元的样式
+      me.str.item.style = {
         "width": w
       };
 
@@ -434,16 +437,9 @@ export default {
 
     },
 
-
-
-
-
-
-
-
-
-    // ================================================================
-    fn_item_bg: function(ele) {
+    // =======================================
+    // 每一项的样式
+    list_item_bg: function(ele) {
       var me = this;
       var ele_s = FN.f_str_miao(ele);
       var now_s = FN.f_str_miao(me.conf.now_str);
@@ -464,13 +460,13 @@ export default {
       return class_name;
     },
     // 返回item的宽
-    fn_item_w: function(ele) {
+    list_item_w: function(ele) {
       return {
         width: ele != this.conf.now_str ? this.conf.title_sp_w + 'px' : this.conf.title_sp_w_now + 'px',
       };
     },
     // 返回item的名字
-    fn_item_name: function(ele, obj) {
+    list_item_name: function(ele, obj) {
       var name = '';
       var key = obj.jg_date.indexOf(ele);
       // 没
@@ -484,7 +480,7 @@ export default {
       return name;
     },
     // 返回轮数
-    fn_item_lun: function(ele, obj) {
+    list_item_lun: function(ele, obj) {
       var key = obj.jg_date.indexOf(ele);
       if (key == -1) {
         return;
@@ -492,11 +488,5 @@ export default {
         return key + 1;
       }
     }
-
-
-
-
-
-
   },
-}
+};

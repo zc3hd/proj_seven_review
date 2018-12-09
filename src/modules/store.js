@@ -18,10 +18,11 @@ var state = {
 
 var mutations = {
   // 登录成功
-  sign_suc: function(state, obj) {
+  user_suc: function(state, key) {
+
     // add按钮样式
     state.add_btn_class = '';
-    // name
+    // add 按钮的名字
     state.add_btn_name = 'add';
     // 登录框消失
     state.login_box_show = false;
@@ -29,7 +30,9 @@ var mutations = {
     setTimeout(function(argument) {
       state.box_show = 'true';
       state.add_ev = true;
-    },1100);
+    }, 1100);
+
+
 
   },
 

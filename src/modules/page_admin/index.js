@@ -17,7 +17,7 @@ import { DatePicker,Message } from 'element-ui';
 Vue.use(DatePicker);
 Vue.prototype.$ele_msg = Message;
 // ================================================vuex
-import store from './store.js';
+import store from '../store.js';
 
 // 根组件
 import App from './main/index.vue';

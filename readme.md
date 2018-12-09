@@ -23,7 +23,7 @@
 ##### 2018/12/7
 * 1.新增登录注册功能。
 * 2.用的是webpack-004的架子，和本项目又不同。
-* 3.webpack-004的结构是vue_demo整个是个功能模块，下面有很多子模块，都属于vue_demo。所以内部有个最终输出是app模块，且文件夹下面有测试自己的模块入口index.html和JS，为了自己测试用。在vue_demo外应该还有个真正的html和JS。
+* 3.webpack-004目录结构是vue_demo整个是个功能模块，下面有很多子模块，都属于vue_demo。所以内部有个最终输出是app模块，且文件夹下面有测试自己的模块入口index.html和JS，为了自己测试用。在vue_demo外应该还有个真正的html和JS。
 * 4.现在我们的结构是login功能，main模块，没有从属关系。又因为是我自己在开发，所以直接在外面有HTML和JS，模块之间都是相互分开，有数据传递用vuex。这样才是最合理的构架方式。
 * 5.在main中引用import { Message } from 'element-ui';在login需要得重新调用。最好的方法就是在那里进行prototype挂载属性。
 ```
@@ -34,8 +34,27 @@ Vue.prototype.$ele_msg = Message;
 ```
 
 * 6.scoped属性只是保证其他组件的class不影响自己，但是根组件的样式还是会影响的。
-* 7.vuex公共属性的命名方式：$xxxx。感觉更好的应该是_$x_name
+* 7.vuex公共属性的命名方式：$xxxx。感觉更好的应该是_$x_name。
 
+##### 2018/12/8
+* 1.实现登录框和新增add按钮是一个处理，出现一个问题：登录成功后，列表没有横向滚动条。原因：一开始页面初始化的时候，不应该渲染页面，登录成功后再进行渲染。现在设置监听：
+```
+  watch: {
+    【还能监听计算元素】
+    $x_box_show: function(val, old_val) {
+      if (val) {
+        this.__init();
+      }
+    },
+  },
+```
+
+2.工程目录：
+```
+1.现在有user和admin两个页面，user的组件、HTML、JS放在page_user下面。
+2.login虽然说是属于user组件的，login最先展示，放到最外面。
+3.store也放在最外面。
+```
 
 
 

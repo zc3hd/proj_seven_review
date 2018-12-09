@@ -22,10 +22,20 @@ export default {
   },
   // 
   methods: {
-    sign:function () {
+    sign:function (key) {
       var me = this;
+
+      // if (me.obj.name == '') {
+      //   me.$ele_msg.error('name不能为空');
+      //   return;
+      // }
+      // if (me.obj.ps == '') {
+      //   me.$ele_msg.error('ps不能为空');
+      //   return;
+      // }
+
       // 登录成功
-      me.$store.commit('sign_suc', {});
+      me.$store.commit('user_suc', {});
     },
 
 
