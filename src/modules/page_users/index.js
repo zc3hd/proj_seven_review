@@ -13,11 +13,20 @@
 //   routes: routes
 // });
 
+
+// ================================================ele-ui
 import { DatePicker,Message } from 'element-ui';
 Vue.use(DatePicker);
 Vue.prototype.$ele_msg = Message;
+
 // ================================================vuex
 import store from '../store.js';
+
+
+// ================================================axios
+Vue.prototype.$http = axios;
+
+
 
 // 根组件
 import App from './main/index.vue';

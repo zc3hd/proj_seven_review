@@ -4,6 +4,7 @@ Vue.use(Vuex);
 
 // 初始化状态
 var state = {
+  _id:'',
   // 主页中 新增按钮的名字
   add_btn_name: '',
   // 列表显示
@@ -18,8 +19,11 @@ var state = {
 
 var mutations = {
   // 登录成功
-  user_suc: function(state, key) {
+  user_suc: function(state, obj) {
+    // 拿到用户ID
+    state._id = obj._id;
 
+    // ====================================
     // add按钮样式
     state.add_btn_class = '';
     // add 按钮的名字
@@ -31,8 +35,6 @@ var mutations = {
       state.box_show = 'true';
       state.add_ev = true;
     }, 1100);
-
-
 
   },
 

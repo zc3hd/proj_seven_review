@@ -67,10 +67,20 @@ export default {
         name: '',
         sum: 5,
         date: '',
-        id: -1,
+        _id: -1,
       },
+
       // api
-      api: {},
+      api: {
+        // 拿到计划数据
+        list: '/api/plan/list.do',
+        // 
+        add: '/api/plan/add.do',
+        // 
+        upd: '/api/plan/upd.do',
+        // 
+        del: '/api/plan/del.do',
+      },
     }
   },
   // x的公共数据
@@ -100,7 +110,7 @@ export default {
     // 登录成功后显示，页面初始化化
     $x_box_show: function(val, old_val) {
       if (val) {
-        this.__init();
+        this._cc_init();
       }
     },
   },
@@ -109,7 +119,7 @@ export default {
     var me = this;
 
     // 
-    me._bg();
+    // me._bg();
   },
   // 
   methods: {
@@ -126,6 +136,13 @@ export default {
     // 关闭
     _layer_hide: function() {
       var me = this;
+
+      // 初始化参数
+      me.layer.name = '';
+      me.layer.sum = 5;
+      me.layer.date = '';
+      me.layer._id = -1;
+
       // 动画离开
       me.layer.class_animate = 'zoomOutRight';
 
@@ -135,7 +152,8 @@ export default {
         // blur
         me.str.class_blur = '';
 
-        me.__init();
+        // 初始化数据
+        me._cc_init();
       }, 1000);
     },
 
@@ -157,7 +175,7 @@ export default {
       // 操作
       me.str.ev_type = 'add';
     },
-    // 修改删除
+    // 修改或删除
     ev_upd: function(obj) {
       var me = this;
       me._layer_show();
@@ -168,16 +186,20 @@ export default {
       me.layer.name = obj.name;
       me.layer.sum = obj.sum;
       me.layer.date = obj.date;
-      me.layer.id = obj.id;
+      me.layer._id = obj._id;
+
+      // console.log(obj);
 
       me.str.ev_type = 'upd';
     },
+
 
     // =====================================弹窗的ev
     // 
     ev_save: function() {
       var me = this;
-
+      var obj = {};
+      var api_url = '';
 
       if (me.layer.name == '') {
         me.$ele_msg.error('name不能为空');
@@ -200,61 +222,75 @@ export default {
         me.layer.date = '';
         return;
       }
-
+      // 先拿到数据
+      obj = {
+        user_id: me.$store.state._id,
+        name: me.layer.name,
+        sum: me.layer.sum,
+        date: FN.f_miao_str(Date.parse(me.layer.date), true),
+      };
       switch (me.str.ev_type) {
         case "add":
-          var obj = {
-            id: Math.random(),
-            name: me.layer.name,
-            sum: me.layer.sum,
-            date: FN.f_miao_str(Date.parse(me.layer.date), true),
-          };
-          // 原始数组改变
-          plans_data.arr.push(obj);
+          // *****************************************************测试数据
+          // var obj = {
+          //   id: Math.random(),
+          //   name: me.layer.name,
+          //   sum: me.layer.sum,
+          //   date: FN.f_miao_str(Date.parse(me.layer.date), true),
+          // };
+          // // 原始数组改变
+          // plans_data.arr.push(obj);
+          // *****************************************************测试数据
+          api_url = me.api.add;
+          me.ev_save_ajax(api_url, obj);
           break;
           // 
         case "upd":
-          plans_data.arr.forEach(function(ele, index) {
-            if (ele.id == me.layer.id) {
-              ele.name = me.layer.name;
-              ele.sum = me.layer.sum;
-              ele.date = me.layer.date;
-            }
-          });
+          // *****************************************************测试数据
+          // plans_data.arr.forEach(function(ele, index) {
+          //   if (ele.id == me.layer._id) {
+          //     ele.name = me.layer.name;
+          //     ele.sum = me.layer.sum;
+          //     ele.date = me.layer.date;
+          //   }
+          // });
+          // *****************************************************测试数据
+          api_url = me.api.upd;
+          obj._id = me.layer._id;
+          console.log(obj);
+          me.ev_save_ajax(api_url, obj);
           break;
       }
-
-
-      me.__init();
-
-      me.layer.name = '';
-      me.layer.sum = 5;
-      me.layer.date = '';
-      me.layer.id = -1;
-
-      // console.log(plans_data.arr);
-      me._layer_hide();
     },
+    // 
+    ev_save_ajax: function(api, obj) {
+      var me = this;
+      me.$ajax
+        .post(api, obj)
+        .then(function(res) {
+          me._layer_hide();
+        });
+    },
+    // 删除
     ev_del: function() {
       var me = this;
 
-      var _index = 0;
-      plans_data.arr.forEach(function(ele, index) {
-        if (ele.id == me.layer.id) {
-          _index = index;
-        }
-      });
-      plans_data.arr.splice(_index, 1);
-
-
-      me.layer.name = '';
-      me.layer.sum = 5;
-      me.layer.date = '';
-      me.layer.id = -1;
-
-
-      me._layer_hide();
+      // *********************************************测试数据
+      // var _index = 0;
+      // plans_data.arr.forEach(function(ele, index) {
+      //   if (ele.id == me.layer._id) {
+      //     _index = index;
+      //   }
+      // });
+      // plans_data.arr.splice(_index, 1);
+      // *********************************************测试数据
+      me.$ajax
+        .post(me.api.del, { _id: me.layer._id })
+        .then(function() {
+          me._layer_hide();
+        });
     },
+    // 
     ev_close: function() {
       var me = this;
       me._layer_hide();
@@ -276,26 +312,42 @@ export default {
       }, 10000);
     },
 
-
-    // 
-    __init: function() {
+    // ============================================================
+    _cc_init: function() {
       var me = this;
 
-      // 清除本地数据数组
-      me.conf.plans_arr.length = 0;
+      // 获取数据
+      me.$ajax
+        .post(me.api.list, {
+          _id: me.$store.state._id
+        })
+        .then(function(res) {
+          var data = res.data.data;
 
-      // 得到now的时间 str
-      me._init_data_now();
-      // 初始化每组数据的间隔
-      me._init_all_jianGe();
-      // 每项数据集中生成
-      me._item_all_obj();
+          // 清除本地数据数组
+          me.conf.plans_arr.length = 0;
 
-      // 大数组生成
-      me._all_obj();
+          // 赋值
+          plans_data.name = data.name;
+          plans_data.arr = data.plans;
 
-      // 表的一些属性
-      me._list();
+          // 添加数据
+          if (plans_data.arr.length == 0) {
+            me.$ele_msg.error('没有学习计划了？快去添加吧!');
+            return;
+          }
+          // 得到now的时间 str
+          me._init_data_now();
+          // 初始化每组数据的间隔
+          me._init_all_jianGe();
+          // 每项数据集中生成
+          me._item_all_obj();
+          // 大数组生成
+          me._all_obj();
+
+          // 表的一些属性
+          me._list();
+        });
     },
     // =======================================
     // 得到现象的时间 str
@@ -321,7 +373,7 @@ export default {
     _init_one_jianGe: function(ele) {
       var me = this;
       var new_ele = {};
-      new_ele.id = ele.id;
+      new_ele._id = ele._id;
       new_ele.name = ele.name;
       new_ele.date = ele.date;
       new_ele.sum = ele.sum;

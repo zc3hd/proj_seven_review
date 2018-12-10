@@ -16,7 +16,7 @@
       <!-- 计划列表盒子 -->
       <div class="box" v-show="$x_box_show">
 
-        <!-- 列表的导航 -->
+        <!-- 计划表的title导航 -->
         <div class="nav" id="nav">
           <div class="item title">
             <div class="box">date</div>
