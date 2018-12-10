@@ -36,7 +36,27 @@ if (process.env.NODE_ENV == 'esc_db') {
       console.log('删除tar.gz完成完成');
     });
 }
-
+// =================================一键下载本地数据库-->项目
+else if (process.env.NODE_ENV == 'db_dn') {
+  var _path = "./";
+  tool
+  // 导出文件夹
+    ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
+    .then(function() {
+      console.log('导出文件夹完成');
+    });
+}
+// =================================一键上传项目数据库-->本地
+else if (process.env.NODE_ENV == 'db_up') {
+  var _path = "./";
+  tool
+  // 删除原来的数据库
+    ._cmd(`mongo --host 127.0.0.1:27017 ${conf.db} --eval "db.dropDatabase()"`)
+    .then(function() {
+      // 导入
+      return tool._cmd(`mongorestore --host 127.0.0.1:27017 -d ${conf.db} ./${conf.db}/`);
+    });
+}
 // =================================一键上传文件到github
 else if (process.env.NODE_ENV == 'git') {
   // 获取当前时间戳
@@ -49,14 +69,18 @@ else if (process.env.NODE_ENV == 'git') {
 
 
   // 要提交的源的名字
-  var origin = (os.hostname()=="LAPTOP-UJ33NHEM"?"origin":"name");
-
+  var origin = (os.hostname() == "LAPTOP-UJ33NHEM" ? "origin" : "name");
 
 
   tool
-    ._cmd(`git add ${_url}`)
+    // 导出数据库
+    ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
+    // 
     .then(function() {
-      return tool._cmd(`git commit -m "date:${tool._date(timestamp)}"`)
+      return tool._cmd(`git add ${_url}`);
+    })
+    .then(function() {
+      return tool._cmd(`git commit -m "date:${tool._date(timestamp)}"`);
     })
     .then(function() {
       return tool._cmd(`git push -u ${origin} master`)
