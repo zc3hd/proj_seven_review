@@ -3,12 +3,11 @@ var path = require('path');
 var Tool = require('./tool.js');
 var tool = new Tool();
 
-
+var _path = "./";
 // =================================一键上传本地数据库
 if (process.env.NODE_ENV == 'esc_db') {
   // 导出的路径、压缩、删除、上传
-  console.log("a");
-  var _path = "./";
+  
   tool
   // 导出文件夹
     ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
@@ -38,7 +37,6 @@ if (process.env.NODE_ENV == 'esc_db') {
 }
 // =================================一键下载本地数据库-->项目
 else if (process.env.NODE_ENV == 'db_dn') {
-  var _path = "./";
   tool
   // 导出文件夹
     ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
@@ -48,7 +46,6 @@ else if (process.env.NODE_ENV == 'db_dn') {
 }
 // =================================一键上传项目数据库-->本地
 else if (process.env.NODE_ENV == 'db_up') {
-  var _path = "./";
   tool
   // 删除原来的数据库
     ._cmd(`mongo --host 127.0.0.1:27017 ${conf.db} --eval "db.dropDatabase()"`)
