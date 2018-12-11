@@ -11,6 +11,12 @@
           <!-- 登录 -->
           <cpt_login v-show='$x_login_box_show'></cpt_login>
         </div>
+        
+        <!-- 用户操作 -->
+        <div class="user_info" v-show="$x_box_show">
+          <div class="item user" ></div>
+          <div class="item leave"></div>
+        </div>
       </div>
 
       <!-- 计划列表盒子 -->
@@ -31,14 +37,14 @@
         <!-- 列表 -->
         <div class="list_box" id="table">
           <!-- 标题 -->
-          <div class="item title" :style="str.item.style">
+          <div class="item title" :style="str.heng_bar.style">
             <div class="sp_box" v-for='ele in conf.all_chuo_arr' :style="list_item_w(ele)">
               <span :class=list_item_bg(ele)>{{ele}}</span>
             </div>
           </div>
           
           <!-- 真实的数据 -->
-          <div class="item" v-for='(obj,index) in conf.plans_arr' :style="str.item.style">
+          <div class="item" v-for='(obj,index) in conf.plans_arr' :style="str.heng_bar.style">
             <div class="sp_box" v-for='ele in conf.all_chuo_arr' :style="list_item_w(ele)">
               <span :class=list_item_bg(ele)>
               {{list_item_name(ele,obj)}}
@@ -88,6 +94,9 @@
         <div class="btn del" @click='ev_del()' v-show='layer.del_show'></div>
       </div>
     </div>
+
+
+    
 
 
 

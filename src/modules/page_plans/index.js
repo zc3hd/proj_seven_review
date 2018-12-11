@@ -19,6 +19,8 @@ Vue.prototype.$ele_msg = Message;
 // ================================================vuex
 import store from '../store.js';
 
+
+
 // ================================================axios
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$ajax = axios;

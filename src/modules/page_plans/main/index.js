@@ -32,6 +32,8 @@ export default {
         all_chuo_arr: [],
         // 所有的计划数据
         plans_arr: [],
+        // 回传的计划
+        plans_today: {},
       },
 
       // str区
@@ -49,7 +51,7 @@ export default {
 
         // ==================================单元格
         // 每个单元的样式
-        item: {
+        heng_bar: {
           style: {},
         },
       },
@@ -80,6 +82,8 @@ export default {
         upd: '/api/plan/upd.do',
         // 
         del: '/api/plan/del.do',
+        // 
+        mark: '/api/plan/mark.do',
       },
     }
   },
@@ -475,8 +479,8 @@ export default {
         w = me.conf.all_chuo_arr.length * me.conf.title_sp_w + 'px';
       }
 
-      // 每个单元的样式
-      me.str.item.style = {
+      // 每个横条的样式宽度
+      me.str.heng_bar.style = {
         "width": w
       };
 
@@ -487,10 +491,36 @@ export default {
         cursorborder: '1px solid #ccc'
       });
 
+      // 回传今天计划
+      me._list_task();
+    },
+    _list_task: function() {
+      // console.log(me.conf.plans_today);
+      var me = this;
+      setTimeout(function() {
+        me.conf.plans_today.user_id = me.$store.state._id;
+        me.$ajax
+          .post(me.api.mark, me.conf.plans_today)
+          .then(function(res) {
+            // me._layer_hide();
+          });
+      }, 1000);
     },
 
+
+
+
+
+
+
+
+
+
+
+
+
     // =======================================
-    // 每一项的样式
+    // 每一项的背景
     list_item_bg: function(ele) {
       var me = this;
       var ele_s = FN.f_str_miao(ele);
@@ -519,6 +549,7 @@ export default {
     },
     // 返回item的名字
     list_item_name: function(ele, obj) {
+      var me = this;
       var name = '';
       var key = obj.jg_date.indexOf(ele);
       // 没
@@ -529,6 +560,14 @@ export default {
       else {
         name = obj.name;
       }
+
+      // 这个日期有数据
+      if (ele == me.conf.now_str) {
+        me.conf.plans_today[obj.name] = key + 1;
+      }
+
+
+
       return name;
     },
     // 返回轮数

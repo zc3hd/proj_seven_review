@@ -35,7 +35,7 @@ if (process.env.NODE_ENV == 'esc_db') {
       console.log('删除tar.gz完成完成');
     });
 }
-// =================================一键下载本地数据库-->项目
+// =================================一键下载本地数据库-->根目录数据库文件夹
 else if (process.env.NODE_ENV == 'db_dn') {
   tool
   // 导出文件夹
@@ -43,8 +43,8 @@ else if (process.env.NODE_ENV == 'db_dn') {
     .then(function() {
       console.log('导出文件夹完成');
     });
-}
-// =================================一键上传项目数据库-->本地
+} 
+// =================================一键上传 根目录数据库文件夹-->本地数据库
 else if (process.env.NODE_ENV == 'db_up') {
   tool
   // 删除原来的数据库

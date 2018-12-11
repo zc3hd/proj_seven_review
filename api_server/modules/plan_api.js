@@ -1,4 +1,4 @@
-function JS_demo(app) {
+function Module(app) {
   var me = this;
 
   // 
@@ -9,8 +9,11 @@ function JS_demo(app) {
   // 模型
   me.User_model = require('../collection/user.js');
   me.Plan_model = require('../collection/plan.js');
+
+  // 邮件
+  me.Email_send = require('../tool/email.js');
 }
-JS_demo.prototype = {
+Module.prototype = {
   init: function() {
     var me = this;
 
@@ -36,6 +39,14 @@ JS_demo.prototype = {
     me.router.post('/del.do', function(req, res) {
       me._del(req, res);
     });
+
+    // mark
+    me.router.post('/mark.do', function(req, res) {
+      me._mark(req, res);
+    });
+
+
+
 
 
     me.app.use(me.api_pro, me.router);
@@ -96,7 +107,7 @@ JS_demo.prototype = {
         return data.save();
       })
       // 返回
-      .then(function() {
+      .then(function(data) {
         res.send({ ret: 1 });
       });
   },
@@ -111,11 +122,48 @@ JS_demo.prototype = {
         res.send({ ret: 1 });
       });
   },
+  // 做标记
+  _mark: function(req, res) {
+    var me = this;
+    // 复制对象
+    var todays = {};
+    var str = '';
+    for (var key in req.body) {
+      if (key != 'user_id') {
+        todays[key] = req.body[key];
+        if (req.body[key] != 0) {
+          str += `
+          <h3>${key}：第${req.body[key]}轮</h3>
+          `;
+        }
+      }
+    }
+    // 找用户
+    me.User_model
+      .findById(req.body.user_id)
+      // 创建计划
+      .then(function(data) {
+        data.todays = JSON.stringify(todays);
+        return data.save();
+      })
+      // 保存成功返回
+      .then(function(data) {
+        // 
+        res.send(todays);
 
+        // 
+        me.Email_send({
+            email: "343371169@qq.com",
+            str: str,
+          })
+          .then(function(info) {
+            console.log(info);
+          });
 
-
+      });
+  },
 };
 
 
 
-module.exports = JS_demo;
+module.exports = Module;

@@ -1,4 +1,4 @@
-function JS_demo(app) {
+function Module(app) {
   var me = this;
 
   // 
@@ -9,7 +9,7 @@ function JS_demo(app) {
   // 模型
   me.User_model = require('../collection/user.js');
 }
-JS_demo.prototype = {
+Module.prototype = {
   init: function() {
     var me = this;
 
@@ -21,9 +21,9 @@ JS_demo.prototype = {
       me._login(req, res);
     });
 
-    // add
-    me.router.post('/add.do', function(req, res) {
-      me._add(req, res);
+    // register
+    me.router.post('/register.do', function(req, res) {
+      me._register(req, res);
     });
 
     me.app.use(me.api_pro, me.router);
@@ -57,25 +57,20 @@ JS_demo.prototype = {
           return;
         }
 
-        res.send({
-          res: 0,
-          desc: "",
-          data:data,
-        });
+        res.send(data);
 
       });
   },
   // 新增用户
-  _add: function(req, res) {
+  _register: function(req, res) {
     var me = this;
 
     me.User_model
-      .create({
-        name: "cc",
-        ps: "cc",
-        email: "hc.zhang@chinalbs.org"
-      })
+      .create(req.body)
       .then(function(result) {
+        res.send(result);
+      })
+      .catch(function (result) {
         res.send(result);
       });
   },
@@ -84,4 +79,4 @@ JS_demo.prototype = {
 
 
 
-module.exports = JS_demo;
+module.exports = Module;
