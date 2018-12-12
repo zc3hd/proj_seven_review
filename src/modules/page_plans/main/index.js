@@ -4,7 +4,7 @@ import plans_data from './test_data.js';
 // =============================================自己组件
 // login
 const cpt_login = resolve => require([
-  '../../login/index.vue'
+  '../login/index.vue'
 ], resolve);
 
 
@@ -56,8 +56,8 @@ export default {
         },
       },
 
-      // 弹窗中数据
-      layer: {
+      // 列表的弹窗中数据
+      plan_layer: {
         // 是否显示
         show: false,
         // 删除标志是否显示
@@ -72,6 +72,19 @@ export default {
         _id: -1,
       },
 
+      // 用户的弹窗中数据
+      user_layer: {
+        // 是否显示
+        show: false,
+        // 
+        name: '',
+        email_key: 5,
+        plans_limit: 0,
+
+        ps: '',
+        email: "",
+      },
+
       // api
       api: {
         // 拿到计划数据
@@ -82,8 +95,11 @@ export default {
         upd: '/api/plan/upd.do',
         // 
         del: '/api/plan/del.do',
-        // 
+        // 标记
         mark: '/api/plan/mark.do',
+
+        // 用户信息更新
+        user_upd: '/api/user/upd.do',
       },
     }
   },
@@ -123,36 +139,36 @@ export default {
     var me = this;
 
     // 
-    // me._bg();
+    me._bg();
   },
   // 
   methods: {
     // 显示
-    _layer_show: function() {
+    _plan_layer_show: function() {
       var me = this;
       // 显示
-      me.layer.show = true;
+      me.plan_layer.show = true;
       // blur
       me.str.class_blur = 'box_blur';
       // 动画显示
-      me.layer.class_animate = 'zoomInLeft';
+      me.plan_layer.class_animate = 'zoomInLeft';
     },
     // 关闭
-    _layer_hide: function() {
+    _plan_layer_hide: function() {
       var me = this;
 
       // 初始化参数
-      me.layer.name = '';
-      me.layer.sum = 5;
-      me.layer.date = '';
-      me.layer._id = -1;
+      me.plan_layer.name = '';
+      me.plan_layer.sum = 5;
+      me.plan_layer.date = '';
+      me.plan_layer._id = -1;
 
       // 动画离开
-      me.layer.class_animate = 'zoomOutRight';
+      me.plan_layer.class_animate = 'zoomOutRight';
 
       setTimeout(function() {
         // 
-        me.layer.show = false;
+        me.plan_layer.show = false;
         // blur
         me.str.class_blur = '';
 
@@ -163,7 +179,7 @@ export default {
 
     // =====================================列表的ev
     // 新增
-    ev_add: function() {
+    ev_plan_add: function() {
       var me = this;
 
       // 没有开启之前是不能用该函数的
@@ -171,26 +187,26 @@ export default {
         return;
       }
 
-      me._layer_show();
+      me._plan_layer_show();
 
       // 删除按钮
-      me.layer.del_show = false;
+      me.plan_layer.del_show = false;
 
       // 操作
       me.str.ev_type = 'add';
     },
     // 修改或删除
-    ev_upd: function(obj) {
+    ev_plan_upd: function(obj) {
       var me = this;
-      me._layer_show();
+      me._plan_layer_show();
       // 删除按钮显示
-      me.layer.del_show = true;
+      me.plan_layer.del_show = true;
 
 
-      me.layer.name = obj.name;
-      me.layer.sum = obj.sum;
-      me.layer.date = obj.date;
-      me.layer._id = obj._id;
+      me.plan_layer.name = obj.name;
+      me.plan_layer.sum = obj.sum;
+      me.plan_layer.date = obj.date;
+      me.plan_layer._id = obj._id;
 
       // console.log(obj);
 
@@ -200,121 +216,184 @@ export default {
 
     // =====================================弹窗的ev
     // 
-    ev_save: function() {
+    ev_plan_save: function() {
       var me = this;
       var obj = {};
       var api_url = '';
 
-      if (me.layer.name == '') {
+      if (me.plan_layer.name == '') {
         me.$ele_msg.error('name不能为空');
         return;
       }
-      if (me.layer.sum <= 1) {
+      if (me.plan_layer.sum <= 1) {
         me.$ele_msg.error('复习轮次不能小于2次');
         return;
       }
-      if (me.layer.sum > 15) {
+      if (me.plan_layer.sum > 15) {
         me.$ele_msg.error('复习轮次不能大于15次');
         return;
       }
-      if (me.layer.date == "") {
+      if (me.plan_layer.date == "") {
         me.$ele_msg.error('请选择计划开始时间');
         return;
       }
-      if (FN.f_str_miao(FN.f_miao_str(Date.parse(me.layer.date), true)) > FN.f_str_miao(me.conf.now_str)) {
+      if (FN.f_str_miao(FN.f_miao_str(Date.parse(me.plan_layer.date), true)) > FN.f_str_miao(me.conf.now_str)) {
         me.$ele_msg.error('不能选择未来的时间');
-        me.layer.date = '';
+        me.plan_layer.date = '';
         return;
       }
       // 先拿到数据
       obj = {
         user_id: me.$store.state._id,
-        name: me.layer.name,
-        sum: me.layer.sum,
-        date: FN.f_miao_str(Date.parse(me.layer.date), true),
+        name: me.plan_layer.name,
+        sum: me.plan_layer.sum,
+        date: FN.f_miao_str(Date.parse(me.plan_layer.date), true),
       };
       switch (me.str.ev_type) {
         case "add":
           // *****************************************************测试数据
           // var obj = {
           //   id: Math.random(),
-          //   name: me.layer.name,
-          //   sum: me.layer.sum,
-          //   date: FN.f_miao_str(Date.parse(me.layer.date), true),
+          //   name: me.plan_layer.name,
+          //   sum: me.plan_layer.sum,
+          //   date: FN.f_miao_str(Date.parse(me.plan_layer.date), true),
           // };
           // // 原始数组改变
           // plans_data.arr.push(obj);
           // *****************************************************测试数据
           api_url = me.api.add;
-          me.ev_save_ajax(api_url, obj);
+          me.ev_plan_save_ajax(api_url, obj);
           break;
           // 
         case "upd":
           // *****************************************************测试数据
           // plans_data.arr.forEach(function(ele, index) {
-          //   if (ele.id == me.layer._id) {
-          //     ele.name = me.layer.name;
-          //     ele.sum = me.layer.sum;
-          //     ele.date = me.layer.date;
+          //   if (ele.id == me.plan_layer._id) {
+          //     ele.name = me.plan_layer.name;
+          //     ele.sum = me.plan_layer.sum;
+          //     ele.date = me.plan_layer.date;
           //   }
           // });
           // *****************************************************测试数据
           api_url = me.api.upd;
-          obj._id = me.layer._id;
+          obj._id = me.plan_layer._id;
           console.log(obj);
-          me.ev_save_ajax(api_url, obj);
+          me.ev_plan_save_ajax(api_url, obj);
           break;
       }
     },
     // 
-    ev_save_ajax: function(api, obj) {
+    ev_plan_save_ajax: function(api, obj) {
       var me = this;
       me.$ajax
         .post(api, obj)
-        .then(function(res) {
-          me._layer_hide();
+        .then(function(data) {
+          data = data.data;
+          // 判断
+          switch (me.str.ev_type) {
+            case "add":
+              // console.log(data);
+              if (data.ret==-1) {
+                me.$ele_msg.error(`您已达到计划界值${data.plans_limit}，如需扩增，请联系管理员!`);
+              }
+              break;
+          }
+          me._plan_layer_hide();
         });
     },
     // 删除
-    ev_del: function() {
+    ev_plan_del: function() {
       var me = this;
 
       // *********************************************测试数据
       // var _index = 0;
       // plans_data.arr.forEach(function(ele, index) {
-      //   if (ele.id == me.layer._id) {
+      //   if (ele.id == me.plan_layer._id) {
       //     _index = index;
       //   }
       // });
       // plans_data.arr.splice(_index, 1);
       // *********************************************测试数据
       me.$ajax
-        .post(me.api.del, { _id: me.layer._id })
+        .post(me.api.del, { _id: me.plan_layer._id })
         .then(function() {
-          me._layer_hide();
+          me._plan_layer_hide();
         });
     },
-    // 
-    ev_close: function() {
+    // 关闭
+    ev_plan_close: function() {
       var me = this;
-      me._layer_hide();
+      me._plan_layer_hide();
     },
 
 
-    // =======================================
-    _bg: function() {
+    // =====================================用户信息
+    ev_user: function() {
       var me = this;
-
-      me.str.class_bg = "bg_" + Math.floor(Math.random() * 7);
-      if (me.str.class_bg == 'bg_0') {
-        me.str.class_bg = "bg_7";
+      me.user_layer.show = true;
+    },
+    // 保存按钮
+    ev_user_save: function() {
+      var me = this;
+      if (me.user_layer.ps == '') {
+        me.$ele_msg.error('ps can not null');
+        return;
+      }
+      if (me.user_layer.ps.length >= 10) {
+        me.$ele_msg.error('ps 不能超过10个字符');
+        return;
       }
 
+      if (me.user_layer.email == '') {
+        me.$ele_msg.error('email can not null');
+        return;
+      }
+      var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+      if (!reg.test(me.user_layer.email)) {
+        me.$ele_msg.error('email 格式不正确!');
+        return;
+      }
 
-      setTimeout(function(argument) {
-        me._bg();
-      }, 10000);
+      me.$ajax
+        .post(me.api.user_upd, {
+          _id: me.$store.state._id,
+          ps: me.user_layer.ps,
+          email: me.user_layer.email,
+        })
+        .then(function(res) {
+          me.$ele_msg({
+            message: '修改数据成功',
+            type: 'success'
+          });
+          me.user_layer.show = false;
+        });
     },
+    // =====================================用户信息
+    ev_user_close: function() {
+      window.location.href = '/';
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ============================================================
     _cc_init: function() {
@@ -331,9 +410,18 @@ export default {
           // 清除本地数据数组
           me.conf.plans_arr.length = 0;
 
-          // 赋值
+          // 拿到数据赋值
           plans_data.name = data.name;
           plans_data.arr = data.plans;
+
+
+          // 用户的数据
+          me.user_layer.name = data.name;
+          me.user_layer.plans_limit = data.plans_limit;
+          me.user_layer.email_key = data.email_key;
+
+          me.user_layer.ps = data.ps;
+          me.user_layer.email = data.email;
 
           // 添加数据
           if (plans_data.arr.length == 0) {
@@ -371,7 +459,6 @@ export default {
         new_ele = me._init_one_jianGe(ele);
         me.conf.plans_arr.push(new_ele);
       });
-
     },
     // 一条数据的间隔
     _init_one_jianGe: function(ele) {
@@ -463,62 +550,6 @@ export default {
       });
     },
 
-
-    // =======================================
-    _list: function() {
-      var me = this;
-
-      var w = 0;
-
-      // 今天有任务
-      if (me.conf.all_chuo_arr.indexOf(me.conf.now_str) != -1) {
-        w = (me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now + 'px';
-      }
-      // 
-      else {
-        w = me.conf.all_chuo_arr.length * me.conf.title_sp_w + 'px';
-      }
-
-      // 每个横条的样式宽度
-      me.str.heng_bar.style = {
-        "width": w
-      };
-
-
-      $('#table').niceScroll({
-        cursorcolor: '#ccc',
-        autohidemode: false,
-        cursorborder: '1px solid #ccc'
-      });
-
-      // 回传今天计划
-      me._list_task();
-    },
-    _list_task: function() {
-      // console.log(me.conf.plans_today);
-      var me = this;
-      setTimeout(function() {
-        me.conf.plans_today.user_id = me.$store.state._id;
-        me.$ajax
-          .post(me.api.mark, me.conf.plans_today)
-          .then(function(res) {
-            // me._layer_hide();
-          });
-      }, 1000);
-    },
-
-
-
-
-
-
-
-
-
-
-
-
-
     // =======================================
     // 每一项的背景
     list_item_bg: function(ele) {
@@ -578,6 +609,73 @@ export default {
       } else {
         return key + 1;
       }
-    }
+    },
+
+
+    // =======================================
+    _list: function() {
+      var me = this;
+
+      var w = 0;
+
+      // 今天有任务
+      if (me.conf.all_chuo_arr.indexOf(me.conf.now_str) != -1) {
+        w = (me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now + 'px';
+      }
+      // 
+      else {
+        w = me.conf.all_chuo_arr.length * me.conf.title_sp_w + 'px';
+      }
+
+      // 每个横条的样式宽度
+      me.str.heng_bar.style = {
+        "width": w
+      };
+
+
+      $('#table').niceScroll({
+        cursorcolor: '#ccc',
+        autohidemode: false,
+        cursorborder: '1px solid #ccc'
+      });
+
+      // 回传今天计划
+      me._list_task();
+    },
+    // 任务列表
+    _list_task: function() {
+      // console.log(me.conf.plans_today);
+      var me = this;
+      setTimeout(function() {
+        me.conf.plans_today.user_id = me.$store.state._id;
+        me.$ajax
+          .post(me.api.mark, me.conf.plans_today)
+          .then(function(res) {
+            // me._plan_layer_hide();
+          });
+      }, 1000);
+    },
+
+
+
+    // =======================================
+    _bg: function() {
+      var me = this;
+
+      me.str.class_bg = "bg_" + Math.floor(Math.random() * 7);
+      if (me.str.class_bg == 'bg_0') {
+        me.str.class_bg = "bg_7";
+      }
+
+
+      setTimeout(function(argument) {
+        me._bg();
+      }, 10000);
+    },
+
+
+
+
+
   },
 };

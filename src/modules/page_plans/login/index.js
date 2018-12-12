@@ -41,9 +41,7 @@ export default {
     var me = this;
 
     // ***********************************登录
-    // 
-    // 
-    // 
+
     // me.$store.commit('user_suc', { _id: "5c0df786f5d482505c12d101" });
     // ***********************************登录
   },
@@ -89,8 +87,17 @@ export default {
             me.$ele_msg.error(data.desc);
             return;
           }
-          // 
-          me.$store.commit('user_suc', { _id: data._id });
+
+          // user
+          if (data.key!='king') {
+            me.$store.commit('user_suc', { _id: data._id });
+          }
+          // admin
+          else {
+            // sessionStorage关了就没有了。
+            window.sessionStorage.setItem("_id", data._id);
+            window.location.href = '/modules/page_users/index.html';
+          }
         });
     },
     // 注册
@@ -167,8 +174,5 @@ export default {
           break;
       }
     },
-
-
-
   },
 }

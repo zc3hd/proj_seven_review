@@ -77,11 +77,23 @@ Module.prototype = {
       // 创建计划
       .then(function(data) {
         _user_one = data;
+        console.log(_user_one);
+        // 现有计划 等于 边界值
+        if (_user_one.plans.length == _user_one.plans_limit) {
+          res.send({
+            ret: -1,
+            plans_limit: _user_one.plans_limit
+          });
+          return;
+        }
+
+        // 没有达到限制
         return me.Plan_model.create({
-          name: req.body.name,
-          sum: req.body.sum,
-          date: req.body.date,
-        });
+            name: req.body.name,
+            sum: req.body.sum,
+            date: req.body.date,
+          });
+
       })
       // 用户保存
       .then(function(data) {

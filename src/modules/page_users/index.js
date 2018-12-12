@@ -15,16 +15,17 @@
 
 
 // ================================================ele-ui
-import { DatePicker,Message } from 'element-ui';
+import { DatePicker,Message,Radio } from 'element-ui';
 Vue.use(DatePicker);
+Vue.use(Radio);
 Vue.prototype.$ele_msg = Message;
 
 // ================================================vuex
-import store from '../store.js';
+// import store from '../store.js';
 
 
 // ================================================axios
-Vue.prototype.$http = axios;
+Vue.prototype.$ajax = axios;
 
 
 
@@ -37,6 +38,6 @@ new Vue({
   render: h => h(App),
   // router: router,
   // =====================vuex
-  store:store,
+  // store:store,
 });
 

@@ -2,11 +2,12 @@
 var conf = {
   user: '343371169@qq.com',
   pass: 'zgltsujynhrhbijg',
-  h:"08",
+  time: "07:30",
 };
-
-
+// 全局工具函数
 var FN = require('./common.js');
+
+
 
 function Module() {
   var me = this;
@@ -23,9 +24,8 @@ Module.prototype = {
     // 初始化邮件服务器
     me._init_emailSever();
 
-    // 发送一次
-    // me._send();
-    me._send_by_day();
+    // 一直发送
+    me._send_online();
   },
   // 初始化邮件服务器
   _init_emailSever: function() {
@@ -33,20 +33,26 @@ Module.prototype = {
     me.transporter = me.nodemailer.createTransport({
       service: 'qq',
       auth: {
-       user:conf.user, 
-       pass:conf.pass, 
+        user: conf.user,
+        pass: conf.pass,
       }
     });
   },
-  // 
-  _send_by_day: function() {
+  // 一直发送
+  _send_online: function() {
     var me = this;
-    var h = new Date().getHours();
-    setInterval(function () {
-      if (h==me.conf.h) {
+    
+    setInterval(function() {
+      if (me._get_time() == conf.time) {
         me._send();
       }
-    },1000*3600);
+    }, 1000 * 60);
+  },
+  // 获取当前时间 H:m
+  _get_time:function () {
+    var h = new Date().getHours();
+    var m = new Date().getMinutes();
+    return `${FN.checkNum(h)}:${FN.checkNum(m)}`;
   },
   // ===========================================
   _send: function() {

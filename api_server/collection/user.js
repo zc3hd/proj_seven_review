@@ -27,7 +27,7 @@ var doc_model = new mongoose.Schema({
   email: String,
 
   // 是否能发邮件
-  email_key: { type: Boolean, default: true },
+  email_key: { type: String, default: "1" },
 });
 
 
