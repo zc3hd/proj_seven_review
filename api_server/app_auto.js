@@ -5,6 +5,8 @@ nodemon({
   ignore: [
     path.join(__dirname,'../src/'),
     path.join(__dirname,'../webapp/'),
+    path.join(__dirname,'../webpack.config.js'),
+    path.join(__dirname,'../cmd.js'),
   ],
-  env: { 'NODE_ENV': 'development' }  
+  env: { 'NODE_ENV': 'development' }
 });

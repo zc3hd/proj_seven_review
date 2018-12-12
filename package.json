@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "set NODE_ENV=dev&&node ./webpack.config.js",
-    "build": "set NODE_ENV=production&&node ./webpack.config.js&&node ./api_server/app.js",
     "api": "set NODE_ENV=production&&node ./api_server/app_auto.js",
+    "build": "set NODE_ENV=production&&node ./webpack.config.js&&node ./api_server/app.js",
     "esc_db": "set NODE_ENV=esc_db&&node ./cmd.js",
     "db_dn": "set NODE_ENV=db_dn&&node ./cmd.js",
     "db_up": "set NODE_ENV=db_up&&node ./cmd.js",

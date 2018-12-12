@@ -12,12 +12,10 @@ var opts = {
   dist: "webapp",
   img: 'img',
   font: 'fonts',
-
-  // 
-  port: 1010,
 };
-var conf = require('./conf.js');
-opts.port = conf.dev_port;
+
+var conf_local = require('./conf.js');
+opts.port = conf_local.dev_port;
 
 
 
@@ -137,8 +135,7 @@ if (process.env.NODE_ENV == 'dev') {
     contentBase: dev_base_str,
     noInfo: false,
 
-    // 热加载模式开启，就是页面html的显示部分改了，不会刷新，
-    // 注释之后--改代码就会刷。
+    // 热加载模式开启，就是页面html的显示部分改了，不会刷新，注释之后--改代码就会刷。
     // hot: true,
 
     // 路由的历史模式不转跳
@@ -146,26 +143,22 @@ if (process.env.NODE_ENV == 'dev') {
 
     // 启动压缩
     compress: true,
-
     // 设置本地服务器
     setup: function(app) {
       // 这个APP就是express生成的app
-      // 我只需要配置路由就行
-      // var express = require('express');
-      // var router = express.Router();
-      // // -------------------------------------------轨迹
-      // router.post("/L_add", function(req, res) {
-      //   res.send({ ret: 1 });
-      // });
-      // // 所有
-      // router.post("/L_all", function(req, res) {
-      //   res.send({ ret: 12 });
-      // });
-      // app.use(router);
-
-
-      require('./api_server/app.js')(app);
+      // require('./api_server/app.js')(app);
     },
+
+    // 配置代理服务器
+    proxy: {
+      '/api': {
+        target: `http://localhost:${conf_local.api_port}`,
+        pathRewrite: {
+          '^/api': '/api'
+        }
+      }
+    },
+
     // 编译的状态
     stats: { colors: true }
   });
