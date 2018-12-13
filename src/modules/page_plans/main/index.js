@@ -167,7 +167,7 @@ export default {
       me.plan_layer.class_animate = 'zoomOutRight';
 
       setTimeout(function() {
-        // 
+        // 弹窗消失
         me.plan_layer.show = false;
         // blur
         me.str.class_blur = '';
@@ -277,7 +277,7 @@ export default {
           // *****************************************************测试数据
           api_url = me.api.upd;
           obj._id = me.plan_layer._id;
-          console.log(obj);
+          // console.log(obj);
           me.ev_plan_save_ajax(api_url, obj);
           break;
       }
@@ -409,6 +409,7 @@ export default {
 
           // 清除本地数据数组
           me.conf.plans_arr.length = 0;
+          me.conf.all_chuo_arr.length = 0;
 
           // 拿到数据赋值
           plans_data.name = data.name;

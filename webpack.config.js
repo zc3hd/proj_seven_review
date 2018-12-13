@@ -1,5 +1,5 @@
 // 要测试那个模块
-var one = './src/modules/page_users/';
+var one = './src/modules/page_plans/';
 
 
 
