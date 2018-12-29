@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var conf = require('../conf.js');
 var email = require('./tool/email.js');
-process.env.NODE_ENV =process.env.NODE_ENV||"process.env.NODE_ENV";
+process.env.NODE_ENV = process.env.NODE_ENV || "process.env.NODE_ENV";
 
 // =====================================================连接数据库
 mongoose.connect('mongodb://localhost/' + conf.db);
@@ -20,7 +20,7 @@ mongoose.connection.once('open', function() {
 // =====================================================API
 // 提供所有的API
 function API(app) {
-  
+
   // post应该放在内部，不然就没有设置post
   // app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
@@ -40,6 +40,9 @@ if (process.env.NODE_ENV == 'dev') {
   // 
   module.exports = function(app) {
     API(app);
+
+    // 启动邮件服务
+    new email().init();
   };
 }
 // build

@@ -27,13 +27,11 @@ export default {
 
         // ============================列表的属性
         // 今天的日期str
-        now_str: '',
+        now_str: FN.f_miao_str(Date.parse(new Date()), true),
         // 所有复习项目的时间str的大数组
         all_chuo_arr: [],
         // 所有的计划数据
         plans_arr: [],
-        // 回传的计划
-        plans_today: {},
       },
 
       // str区
@@ -137,13 +135,12 @@ export default {
   // 初始函数
   mounted: function() {
     var me = this;
-
     // 
-    me._bg();
+    // me._bg();
   },
   // 
   methods: {
-    // 显示
+    // 计划弹窗显示
     _plan_layer_show: function() {
       var me = this;
       // 显示
@@ -153,7 +150,7 @@ export default {
       // 动画显示
       me.plan_layer.class_animate = 'zoomInLeft';
     },
-    // 关闭
+    // 计划弹窗关闭
     _plan_layer_hide: function() {
       var me = this;
 
@@ -212,9 +209,6 @@ export default {
 
       me.str.ev_type = 'upd';
     },
-
-
-    // =====================================弹窗的ev
     // 
     ev_plan_save: function() {
       var me = this;
@@ -277,7 +271,6 @@ export default {
           // *****************************************************测试数据
           api_url = me.api.upd;
           obj._id = me.plan_layer._id;
-          // console.log(obj);
           me.ev_plan_save_ajax(api_url, obj);
           break;
       }
@@ -293,7 +286,7 @@ export default {
           switch (me.str.ev_type) {
             case "add":
               // console.log(data);
-              if (data.ret==-1) {
+              if (data.ret == -1) {
                 me.$ele_msg.error(`您已达到计划界值${data.plans_limit}，如需扩增，请联系管理员!`);
               }
               break;
@@ -315,7 +308,10 @@ export default {
       // plans_data.arr.splice(_index, 1);
       // *********************************************测试数据
       me.$ajax
-        .post(me.api.del, { _id: me.plan_layer._id })
+        .post(me.api.del, {
+          _id: me.plan_layer._id,
+          user_id: me.$store.state._id,
+        })
         .then(function() {
           me._plan_layer_hide();
         });
@@ -368,29 +364,9 @@ export default {
           me.user_layer.show = false;
         });
     },
-    // =====================================用户信息
     ev_user_close: function() {
       window.location.href = '/';
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -399,6 +375,7 @@ export default {
     _cc_init: function() {
       var me = this;
 
+
       // 获取数据
       me.$ajax
         .post(me.api.list, {
@@ -406,139 +383,48 @@ export default {
         })
         .then(function(res) {
           var data = res.data.data;
+          // console.log(data);
 
-          // 清除本地数据数组
-          me.conf.plans_arr.length = 0;
-          me.conf.all_chuo_arr.length = 0;
-
-          // 拿到数据赋值
-          plans_data.name = data.name;
-          plans_data.arr = data.plans;
-
-
-          // 用户的数据
-          me.user_layer.name = data.name;
-          me.user_layer.plans_limit = data.plans_limit;
-          me.user_layer.email_key = data.email_key;
-
-          me.user_layer.ps = data.ps;
-          me.user_layer.email = data.email;
-
-          // 添加数据
-          if (plans_data.arr.length == 0) {
+          // 提醒添加数据
+          if (data.plans.length == 0) {
             me.$ele_msg.error('没有学习计划了？快去添加吧!');
             return;
           }
-          // 得到now的时间 str
-          me._init_data_now();
-          // 初始化每组数据的间隔
-          me._init_all_jianGe();
-          // 每项数据集中生成
-          me._item_all_obj();
-          // 大数组生成
+
+          // 拿到线上数据
+          me.conf.plans_arr = data.plans;
+          // 大标题的日期
+          me.conf.all_chuo_arr.length = 0;
+          // 大标题的日期生成
           me._all_obj();
 
           // 表的一些属性
           me._list();
+
+
+          // 用户信息用的属性
+          me.user_layer.name = data.name;
+          // 计划限制
+          me.user_layer.plans_limit = data.plans_limit;
+          // 邮件开关
+          me.user_layer.email_key = data.email_key;
+          // 密码
+          me.user_layer.ps = data.ps;
+          // 邮件
+          me.user_layer.email = data.email;
         });
     },
-    // =======================================
-    // 得到现象的时间 str
-    _init_data_now: function() {
-      var me = this;
-      // 当前时间的秒数
-      var miao = Date.parse(new Date());
-      // 得到现在的日期 str
-      me.conf.now_str = FN.f_miao_str(miao, true);
-    },
-    // 初始化每组数据的间隔
-    _init_all_jianGe: function() {
-      var me = this;
-
-      var new_ele = null;
-      plans_data.arr.forEach(function(ele, index) {
-        new_ele = me._init_one_jianGe(ele);
-        me.conf.plans_arr.push(new_ele);
-      });
-    },
-    // 一条数据的间隔
-    _init_one_jianGe: function(ele) {
-      var me = this;
-      var new_ele = {};
-      new_ele._id = ele._id;
-      new_ele.name = ele.name;
-      new_ele.date = ele.date;
-      new_ele.sum = ele.sum;
-
-      var day = 1;
-      var review_jg_arr = [];
-      for (var i = 0; i < new_ele.sum; i++) {
-        review_jg_arr.push(day);
-        // 下一次的数据
-        day = day * 2;
-        switch (day) {
-          case 8:
-            day = 7;
-            break;
-          case 14:
-            day = 15;
-            break;
-        }
-      }
-      new_ele.jg_days = review_jg_arr;
-      return new_ele;
-    },
-
-    // =======================================
-    // 每项数据生成
-    _item_all_obj: function() {
-      var me = this;
-      // 
-      me.conf.plans_arr.forEach(function(ele, index) {
-        // me._item_one_data(ele.name, FN.f_str_miao(ele.date));
-        me._item_one_data(ele);
-
-      });
-    },
-    // 每项复习日期的生成
-    _item_one_data: function(obj) {
-      var me = this;
-      // 新的戳
-      var new_chuo = 0;
-      var new_str = '';
-      // 收集每项日期的 数组
-      var new_str_arr = [];
-
-      // 复习周期
-      obj.jg_days.forEach(function(ele, index) {
-
-        // 新的戳
-        new_chuo = FN.f_str_miao(obj.date) + 24 * 3600000 * (ele - 1);
-        // 新日期str
-        new_str = FN.f_miao_str(new_chuo, true);
-
-        // 新的字符串数组
-        new_str_arr.push(new_str);
-      });
-      // 本对象挂载
-      obj.jg_date = new_str_arr;
-
-      return obj;
-    },
-
-
-    // =======================================
-    // 大数组生成
+    // 大数组标题的生成
     _all_obj: function() {
       var me = this;
       me.conf.plans_arr.forEach(function(ele, index) {
-        me._all_from_one(ele.jg_date);
+        me._all_obj_one(ele.jg_date);
       });
       // 排序
       me.conf.all_chuo_arr.sort();
     },
     // 每项的不重复填入
-    _all_from_one: function(arr) {
+    _all_obj_one: function(arr) {
       var me = this;
       // 戳在大数组中的标识
       var chuo_key = null;
@@ -550,6 +436,8 @@ export default {
         }
       });
     },
+
+
 
     // =======================================
     // 每一项的背景
@@ -583,8 +471,11 @@ export default {
     list_item_name: function(ele, obj) {
       var me = this;
       var name = '';
+
+      // 大集合里没有当前这个计划的日期
       var key = obj.jg_date.indexOf(ele);
-      // 没
+      
+      // 没有这个计划
       if (key == -1) {
         name = '';
       }
@@ -593,11 +484,10 @@ export default {
         name = obj.name;
       }
 
-      // 这个日期有数据
-      if (ele == me.conf.now_str) {
-        me.conf.plans_today[obj.name] = key + 1;
-      }
-
+      // // 这个日期有数据
+      // if (ele == me.conf.now_str) {
+      //   me.conf.plans_today[obj.name] = key + 1;
+      // }
 
 
       return name;
@@ -611,9 +501,6 @@ export default {
         return key + 1;
       }
     },
-
-
-    // =======================================
     _list: function() {
       var me = this;
 
@@ -623,7 +510,7 @@ export default {
       if (me.conf.all_chuo_arr.indexOf(me.conf.now_str) != -1) {
         w = (me.conf.all_chuo_arr.length - 1) * me.conf.title_sp_w + me.conf.title_sp_w_now + 'px';
       }
-      // 
+      // 没有任务的宽度
       else {
         w = me.conf.all_chuo_arr.length * me.conf.title_sp_w + 'px';
       }
@@ -640,21 +527,6 @@ export default {
         cursorborder: '1px solid #ccc'
       });
 
-      // 回传今天计划
-      me._list_task();
-    },
-    // 任务列表
-    _list_task: function() {
-      // console.log(me.conf.plans_today);
-      var me = this;
-      setTimeout(function() {
-        me.conf.plans_today.user_id = me.$store.state._id;
-        me.$ajax
-          .post(me.api.mark, me.conf.plans_today)
-          .then(function(res) {
-            // me._plan_layer_hide();
-          });
-      }, 1000);
     },
 
 

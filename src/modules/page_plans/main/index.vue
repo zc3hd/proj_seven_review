@@ -14,8 +14,12 @@
         
         <!-- 用户操作 -->
         <div class="user_info" v-show="$x_box_show">
+
+          <!-- 用户修改信息 -->
           <div class="item user" @click='ev_user()'></div>
+          <!-- 用户退出 -->
           <div class="item leave" @click='ev_user_close()'></div>
+
         </div>
       </div>
 
@@ -24,38 +28,56 @@
 
         <!-- 计划表的title导航 -->
         <div class="nav" id="nav">
+
           <div class="item title">
             <div class="box">date</div>
           </div>
-
+          
+          <!-- 每个项目 -->
           <div class="item item_name" v-for='(obj,index) in conf.plans_arr' @click='ev_plan_upd(obj)'>
             <div class="box">{{obj.name}}</div>
           </div>
+
         </div>
 
 
         <!-- 列表 -->
         <div class="list_box" id="table">
-          <!-- 标题 -->
+
+
+
+          <!-- 所有时间的时间标题 -->
           <div class="item title" :style="str.heng_bar.style">
+          
             <div class="sp_box" v-for='ele in conf.all_chuo_arr' :style="list_item_w(ele)">
               <span :class=list_item_bg(ele)>{{ele}}</span>
             </div>
+
           </div>
           
+
+
           <!-- 真实的数据 -->
           <div class="item" v-for='(obj,index) in conf.plans_arr' :style="str.heng_bar.style">
             <div class="sp_box" v-for='ele in conf.all_chuo_arr' :style="list_item_w(ele)">
               <span :class=list_item_bg(ele)>
               {{list_item_name(ele,obj)}}
+              <!-- 第几轮的提示 -->
               <div class="lun" v-show="list_item_name(ele,obj)==''?false:true">{{list_item_lun(ele,obj)}}</div>
             </span>
             </div>
           </div>
+
+
+
+
         </div>
 
-      </div>
 
+
+
+
+      </div>
     </div>
 
 

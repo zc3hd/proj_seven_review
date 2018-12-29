@@ -42,7 +42,7 @@ export default {
 
     // ***********************************登录
 
-    // me.$store.commit('user_suc', { _id: "5c0df786f5d482505c12d101" });
+    me.$store.commit('user_suc', { _id: "5c27419613d3b3817c7612f1" });
     // ***********************************登录
   },
   // 
@@ -92,7 +92,7 @@ export default {
           if (data.key!='king') {
             me.$store.commit('user_suc', { _id: data._id });
           }
-          // admin
+          // admin得的 页面 转跳
           else {
             // sessionStorage关了就没有了。
             window.sessionStorage.setItem("_id", data._id);
