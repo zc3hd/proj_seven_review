@@ -13,9 +13,10 @@
 //   routes: routes
 // });
 // ================================================ele_UI
-import { DatePicker,Message,Radio } from 'element-ui';
+import { DatePicker,Message,Radio,TimePicker } from 'element-ui';
 Vue.use(DatePicker);
 Vue.use(Radio);
+Vue.use(TimePicker);
 Vue.prototype.$ele_msg = Message;
 // ================================================vuex
 import store from './store.js';

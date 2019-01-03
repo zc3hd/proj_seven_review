@@ -37,6 +37,14 @@ module.exports = {
     var miao = Date.parse(ser);
     return miao;
   },
+  // 时间转时分
+  f_HHmm:function  (time) {
+    var me = this;
+    if (time) {
+      return `${me.checkNum(new Date(time).getHours())}:${me.checkNum(new Date(time).getMinutes())}`;
+    }
+    return `${me.checkNum(new Date().getHours())}:${me.checkNum(new Date().getMinutes())}`;
+  },
   checkNum: function(num) {
     if (num < 10) {
       return "0" + num;

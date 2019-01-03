@@ -8,8 +8,6 @@ const cpt_login = resolve => require([
 ], resolve);
 
 
-
-
 export default {
   components: {
     cpt_login: cpt_login,
@@ -63,10 +61,13 @@ export default {
 
         // 动画样式
         class_animate: 'box_none',
+
         // 
         name: '',
         sum: 5,
         date: '',
+        // 计划提醒事件
+        note_time: "",
         _id: -1,
       },
 
@@ -93,8 +94,6 @@ export default {
         upd: '/api/plan/upd.do',
         // 
         del: '/api/plan/del.do',
-        // 标记
-        mark: '/api/plan/mark.do',
 
         // 用户信息更新
         user_upd: '/api/user/upd.do',
@@ -136,7 +135,7 @@ export default {
   mounted: function() {
     var me = this;
     // 
-    // me._bg();
+    me._bg();
   },
   // 
   methods: {
@@ -158,6 +157,8 @@ export default {
       me.plan_layer.name = '';
       me.plan_layer.sum = 5;
       me.plan_layer.date = '';
+      me.plan_layer.note_time = '';
+
       me.plan_layer._id = -1;
 
       // 动画离开
@@ -166,7 +167,7 @@ export default {
       setTimeout(function() {
         // 弹窗消失
         me.plan_layer.show = false;
-        // blur
+        // blur类名
         me.str.class_blur = '';
 
         // 初始化数据
@@ -199,13 +200,17 @@ export default {
       // 删除按钮显示
       me.plan_layer.del_show = true;
 
+      console.log(obj);
 
+      // 初始化数据
       me.plan_layer.name = obj.name;
       me.plan_layer.sum = obj.sum;
       me.plan_layer.date = obj.date;
+      me.plan_layer.note_time = obj.note_time;
+
       me.plan_layer._id = obj._id;
 
-      // console.log(obj);
+
 
       me.str.ev_type = 'upd';
     },
@@ -231,6 +236,7 @@ export default {
         me.$ele_msg.error('请选择计划开始时间');
         return;
       }
+      // 日期
       if (FN.f_str_miao(FN.f_miao_str(Date.parse(me.plan_layer.date), true)) > FN.f_str_miao(me.conf.now_str)) {
         me.$ele_msg.error('不能选择未来的时间');
         me.plan_layer.date = '';
@@ -242,7 +248,9 @@ export default {
         name: me.plan_layer.name,
         sum: me.plan_layer.sum,
         date: FN.f_miao_str(Date.parse(me.plan_layer.date), true),
+        note_time: me.plan_layer.note_time
       };
+
       switch (me.str.ev_type) {
         case "add":
           // *****************************************************测试数据
@@ -474,7 +482,7 @@ export default {
 
       // 大集合里没有当前这个计划的日期
       var key = obj.jg_date.indexOf(ele);
-      
+
       // 没有这个计划
       if (key == -1) {
         name = '';
@@ -521,11 +529,26 @@ export default {
       };
 
 
-      $('#table').niceScroll({
-        cursorcolor: '#ccc',
-        autohidemode: false,
-        cursorborder: '1px solid #ccc'
+      // // 移动端
+      // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+      //   window.location.href = "https://www.baidu.com/";
+      // }
+      // // pc
+      //  else {
+      //   window.location.href = "http://news.baidu.com/";
+      // }
+
+
+      FN.check_source(function() {
+        // body... 
+      }, function() {
+        $('#table').niceScroll({
+          cursorcolor: '#ccc',
+          autohidemode: false,
+          cursorborder: '1px solid #ccc'
+        });
       });
+
 
     },
 

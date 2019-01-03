@@ -32,6 +32,10 @@ function API(app) {
   // 用户
   var plan_api = require('./modules/plan_api.js');
   new plan_api(app).init();
+
+
+  // 启动邮件服务
+  new email().init();
 }
 
 
@@ -39,10 +43,7 @@ function API(app) {
 if (process.env.NODE_ENV == 'dev') {
   // 
   module.exports = function(app) {
-    API(app);
-
-    // 启动邮件服务
-    new email().init();
+    API(app);    
   };
 }
 // build
@@ -53,8 +54,6 @@ else {
   // 提供api服务
   API(app);
 
-  // 启动邮件服务
-  new email().init();
 
   app.listen(conf.api_port);
   console.log('build app服务 ' + conf.api_port);

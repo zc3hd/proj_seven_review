@@ -2,6 +2,17 @@
  * Created on 2017/12/13 BY zhanghongc
  */
 var FN = {
+  // 监测来源
+  check_source: function(cb1,cb2) {
+    // 手机端
+    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+      cb1&&cb1();
+    } 
+    // PC端
+    else {
+      cb2&&cb2();
+    }
+  },
   //获取cookie
   getCookie: function(c_name) {
     if (document.cookie.length > 0) {
@@ -51,7 +62,7 @@ var FN = {
       obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
     }
   },
-  //-------------------------------------------------时间戳转日期
+  //时间戳转日期
   f_miao_str: function(date, flag) {
     var me = this;
     if (!date) {;
@@ -66,14 +77,13 @@ var FN = {
       }
     }
   },
-    //日期转时间戳
+  //日期转时间戳
   f_str_miao: function(str) {
     var me = this;
     var ser = new Date(str);
     var miao = Date.parse(ser);
     return miao;
   },
-
   checkNum: function(num) {
     if (num < 10) {
       return "0" + num;
@@ -95,7 +105,7 @@ var FN = {
       }
     }
   },
-  // 转时分
+  // 时间转 年月日时分
   f_s_f: function(date) {
     var me = this;
     if (!date) {;

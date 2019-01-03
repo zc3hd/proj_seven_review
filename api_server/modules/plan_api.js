@@ -62,8 +62,6 @@ Module.prototype = {
         path: "plans",
       })
       .then(function(data) {
-        // console.log(data);
-
 
         res.send({
           res: 0,
@@ -150,6 +148,9 @@ Module.prototype = {
 
           date: req.body.date,
           jg_date: req.body.jg_date,
+
+          // 邮件提醒时间
+          note_time: req.body.note_time,
         });
 
       })
@@ -183,6 +184,9 @@ Module.prototype = {
         data.date = req.body.date;
         data.jg_date = req.body.jg_date;
 
+        // 邮件提醒时间
+        data.note_time = req.body.note_time;
+
 
         return data.save();
       })
@@ -202,7 +206,7 @@ Module.prototype = {
       // 创建计划
       .then(function(data) {
         _user_one = data;
-        // 用户删除
+        // 用户中的计划删除
         _user_one.plans.splice(_user_one.plans.indexOf(req.body._id), 1);
         return _user_one.save();
       })
