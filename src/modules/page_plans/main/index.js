@@ -135,7 +135,14 @@ export default {
   mounted: function() {
     var me = this;
     // 
-    me._bg();
+
+    FN.check_source(function() {
+
+      },
+      // pc
+      function() {
+        me._bg();
+      });
   },
   // 
   methods: {
